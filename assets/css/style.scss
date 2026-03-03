@@ -2,12 +2,12 @@
 ---
 @import "main";
 
-/* 隐藏侧边栏底部的 GitHub 图标 */
+/* 隐藏 GitHub 图标 */
 #sidebar footer a[aria-label='github'] {
-display: none !important;
+  display: none !important;
 }
 
-/* 隐藏侧边栏底部的 RSS 订阅图标 */
+/* 隐藏 RSS 订阅图标 */
 #sidebar footer a[aria-label='rss'] {
-display: none !important;
+  display: none !important;
 }
