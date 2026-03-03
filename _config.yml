@@ -72,7 +72,7 @@ theme_mode:
 
 cdn:
 
-avatar:
+avatar: '/website/assets/img/avatar.jpg'
 
 social_preview_image: 
 
