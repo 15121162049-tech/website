@@ -1,13 +1,1 @@
----
----
-@import "main";
-
-/* 隐藏 GitHub 图标 */
-#sidebar footer a[aria-label='github'] {
-  display: none !important;
-}
-
-/* 隐藏 RSS 订阅图标 */
-#sidebar footer a[aria-label='feed'] {
-  display: none !important;
-}
+/* 
