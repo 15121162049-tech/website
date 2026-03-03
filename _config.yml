@@ -35,8 +35,8 @@ social:
   name: rick
   email: 
   links:
-    - https://github.com/15121162049-tech/website
-    - https://github.com/15121162049-tech
+    #- https://github.com/15121162049-tech/website
+    #- https://github.com/15121162049-tech
 
 # Site Verification Settings
 webmaster_verifications:
