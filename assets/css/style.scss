@@ -1,23 +1,35 @@
 ---
 ---
-/* 1. 针对带行号的代码块容器，固定高度并允许垂直滚动 */
-.language-plaintext.highlighter-rouge .rouge-table {
-    display: block !important;
-    max-height: 300px !important; /* 你想要的窗口高度 */
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-}
+@import "main";
 
-/* 2. 强制表格内的代码列自动换行，防止撑开宽度 */
-.language-plaintext.highlighter-rouge .rouge-code pre {
-    white-space: pre-wrap !important;
-    word-break: break-all !important;
-    overflow-x: hidden !important;
-}
-
-/* 3. 针对不带行号的普通 plaintext 情况（备选） */
+/* --- 1. 代码块优化：约束高度、开启滚动、强制换行 --- */
 .language-plaintext.highlighter-rouge .highlight {
-    max-height: 300px !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
+    display: block !important;
+    max-height: 350px !important;    /* 约束最大高度 */
+    overflow-y: auto !important;     /* 允许垂直滚动 */
+    overflow-x: hidden !important;   /* 禁止横向滚动 */
+}
+
+/* 压缩行号(gutter)和内容(code)之间的空行 */
+.language-plaintext.highlighter-rouge .rouge-gutter,
+.language-plaintext.highlighter-rouge .rouge-code {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1.2 !important;     /* 解决你截图中行间距过大的问题 */
+}
+
+.language-plaintext.highlighter-rouge code,
+.language-plaintext.highlighter-rouge pre {
+    white-space: pre-wrap !important; /* 强制文本自动换行 */
+    word-break: break-all !important; /* 强制长单词换行 */
+    font-size: 0.85rem !important;    /* 缩小文字大小 */
+}
+
+/* --- 2. 图片优化：约束最大宽高、防拉伸 --- */
+.post-content img {
+    max-width: 100% !important;   /* 宽度不超出容器 */
+    max-height: 500px !important; /* 约束最大高度 */
+    height: auto !important;      /* 防止图片变形 */
+    display: block !important;    /* 强制居中 */
+    margin: 1.5rem auto !important;
 }
