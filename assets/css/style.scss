@@ -1,14 +1,28 @@
-/* 针对 Chirpy 主题代码块容器的强制换行修复 */
-.highlight pre, 
-pre.highlight, 
-.language-plaintext pre {
-  white-space: pre-wrap !important;       /* 保留空格但允许自动换行 */
-  word-wrap: break-word !important;      /* 单词过长时强制断行 */
-  word-break: break-all !important;      /* 允许在任意字符间断行 */
-  overflow-x: hidden !important;         /* 彻底移除下方滚动条 */
+---
+# 这一行三个横杠必须保留，它是 Jekyll 处理 SCSS 的开关
+---
+
+/* 强行穿透所有层级 */
+* {
+  --code-header-height: 2.25rem;
 }
 
-/* 移除导致横向滚动的固定宽度限制 */
-.post-content pre > code {
+pre, code, .highlight, .chroma {
   white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  overflow-x: hidden !important;
+}
+
+/* 专门针对 Chirpy 的代码容器 */
+div[class^="language-"] pre,
+div[class^="language-"] code {
+  white-space: pre-wrap !important;
+  display: block !important;
+}
+
+/* 移除导致横向滚动的固定布局 */
+.post-content pre > code {
+  display: inline-block !important;
+  width: 100% !important;
 }
