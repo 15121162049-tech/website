@@ -1,0 +1,19 @@
+<style>
+  /* 强制针对 plaintext 代码块生效 */
+  .language-plaintext.highlighter-rouge .highlight,
+  .language-plaintext.highlighter-rouge .rouge-table {
+    display: block !important;
+    max-height: 350px !important; /* 你可以调整这个高度 */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* 强制内部文字自动换行，防止出现横向滚动条 */
+  .language-plaintext.highlighter-rouge pre,
+  .language-plaintext.highlighter-rouge code,
+  .language-plaintext.highlighter-rouge .rouge-code {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+    display: block !important;
+  }
+</style>
