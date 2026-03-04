@@ -2,48 +2,34 @@
 ---
 @import "main";
 
-/* --- 1. 终极修复：代码块行号对齐与空白消除 --- */
-.post-content .language-plaintext.highlighter-rouge {
-    margin-bottom: 1rem !important; /* 限制外层容器间距 */
-}
+/* --- 修复：自动换行不产生新行号 --- */
 
-/* 核心：强制恢复表格布局，解决 image_e44e01.jpg 的错位 */
+/* 1. 强制恢复表格布局，这是对齐行号的关键 */
 .post-content .language-plaintext.highlighter-rouge .rouge-table {
     display: table !important;
     width: 100% !important;
     border-collapse: collapse !important;
-    margin: 0 !important;
 }
 
-/* 统一行号和代码单元格的行高与对齐 */
+/* 2. 确保行号和代码块在垂直方向上顶部对齐 */
 .post-content .language-plaintext.highlighter-rouge .rouge-gutter,
 .post-content .language-plaintext.highlighter-rouge .rouge-code {
     padding: 0 !important;
-    line-height: 1.4 !important;    /* 必须完全一致 */
-    vertical-align: top !important; /* 顶部对齐 */
+    line-height: 1.4 !important;    /* 统一行高 */
+    vertical-align: top !important; /* 确保换行时行号依然对准第一行 */
 }
 
-/* 解决换行导致的额外空白：强制 pre 标签间距归零 */
-.post-content .language-plaintext.highlighter-rouge pre {
-    white-space: pre-wrap !important;
-    word-break: break-all !important;
+/* 3. 强制右侧内容自动换行，且不影响左侧行号计数 */
+.post-content .language-plaintext.highlighter-rouge .rouge-code pre {
+    white-space: pre-wrap !important; /* 允许自动换行 */
+    word-break: break-all !important; /* 强制长单词断行 */
     margin: 0 !important;
     padding: 0 0.5rem !important;
 }
 
-/* 约束高度：直接作用于带滚动条的 highlight 容器 */
+/* 4. 解决 image_d816ab.jpg 中的容器溢出问题 */
 .post-content .language-plaintext.highlighter-rouge .highlight {
-    max-height: 350px !important;   /* 你在 image_d877e4.jpg 中要求的数值 */
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    border-radius: 8px !important;
-}
-
-/* --- 2. 图片优化：约束宽高且不拉伸 --- */
-.post-content img {
-    max-width: 80% !important;      /* 稍微收窄，视觉效果更好 */
-    max-height: 500px !important;   /* 约束高度 */
-    height: auto !important;        /* 关键：防变形 */
-    display: block !important;
-    margin: 1.5rem auto !important; /* 居中 */
+    max-height: 350px !important;   /* 约束高度 */
+    overflow-y: auto !important;    /* 开启垂直滚动 */
+    overflow-x: hidden !important;  /* 禁止横向滚动以强制换行 */
 }
