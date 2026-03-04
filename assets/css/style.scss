@@ -2,34 +2,36 @@
 ---
 @import "main";
 
-/* --- 1. 代码块优化：约束高度、开启滚动、强制换行 --- */
-.language-plaintext.highlighter-rouge .highlight {
-    display: block !important;
-    max-height: 350px !important;    /* 约束最大高度 */
-    overflow-y: auto !important;     /* 允许垂直滚动 */
-    overflow-x: hidden !important;   /* 禁止横向滚动 */
+/* 1. 核心修复：确保行号与换行后的内容高度对齐 */
+.language-plaintext.highlighter-rouge .rouge-table {
+    display: table !important;      /* 恢复表格布局，这是对齐的关键 */
+    width: 100% !important;
 }
 
-/* 压缩行号(gutter)和内容(code)之间的空行 */
+.language-plaintext.highlighter-rouge .rouge-code pre {
+    white-space: pre-wrap !important; /* 开启自动换行 */
+    word-break: break-all !important;
+}
+
+/* 2. 压缩行号间距，解决空行感 */
 .language-plaintext.highlighter-rouge .rouge-gutter,
 .language-plaintext.highlighter-rouge .rouge-code {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    line-height: 1.2 !important;     /* 解决你截图中行间距过大的问题 */
+    padding: 0 !important;
+    line-height: 1.2 !important;      /* 统一行高 */
+    vertical-align: top !important;   /* 确保顶部对齐 */
 }
 
-.language-plaintext.highlighter-rouge code,
-.language-plaintext.highlighter-rouge pre {
-    white-space: pre-wrap !important; /* 强制文本自动换行 */
-    word-break: break-all !important; /* 强制长单词换行 */
-    font-size: 0.85rem !important;    /* 缩小文字大小 */
+/* 3. 约束整体高度并开启滚动 */
+.language-plaintext.highlighter-rouge .highlight {
+    max-height: 350px !important;    
+    overflow-y: auto !important;
 }
 
-/* --- 2. 图片优化：约束最大宽高、防拉伸 --- */
+/* 4. 图片宽高约束 (放一起) */
 .post-content img {
-    max-width: 100% !important;   /* 宽度不超出容器 */
-    max-height: 500px !important; /* 约束最大高度 */
-    height: auto !important;      /* 防止图片变形 */
-    display: block !important;    /* 强制居中 */
+    max-width: 100% !important;
+    max-height: 500px !important;
+    height: auto !important;
+    display: block !important;
     margin: 1.5rem auto !important;
 }
