@@ -1,24 +1,23 @@
 ---
 ---
-/* 这里的三个减号不能丢，它是 Jekyll 识别 SCSS 的开关 */
-
-/* 1. 针对代码块的外层容器 */
-.post-content .language-plaintext.highlighter-rouge .highlight,
-.post-content .language-plaintext.highlighter-rouge .rouge-table {
-  max-height: 300px !important;    /* 强制固定高度 */
-  overflow-y: auto !important;     /* 强制纵向滚动 */
-  overflow-x: hidden !important;   /* 彻底关掉横向滚动 */
-  display: block !important;
+/* 1. 针对带行号的代码块容器，固定高度并允许垂直滚动 */
+.language-plaintext.highlighter-rouge .rouge-table {
+    display: block !important;
+    max-height: 300px !important; /* 你想要的窗口高度 */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
 
-/* 2. 针对代码块的内部代码，强制换行 */
-.post-content .language-plaintext.highlighter-rouge code {
-  white-space: pre-wrap !important; /* 核心：允许自动折行 */
-  word-break: break-all !important; /* 确保长单词也能断开换行 */
-  display: block !important;
+/* 2. 强制表格内的代码列自动换行，防止撑开宽度 */
+.language-plaintext.highlighter-rouge .rouge-code pre {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+    overflow-x: hidden !important;
 }
 
-/* 3. 隐藏可能出现的横向滚动条（保险起见） */
-.post-content .language-plaintext.highlighter-rouge pre {
-  overflow-x: hidden !important;
+/* 3. 针对不带行号的普通 plaintext 情况（备选） */
+.language-plaintext.highlighter-rouge .highlight {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
