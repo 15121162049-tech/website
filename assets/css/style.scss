@@ -3,49 +3,52 @@
 @import "main";
 
 /* ============================================================
-   1. 核心修复：确保行号与换行后的内容高度完全对齐
-   解决 image_d8e8a7.png 中出现的行号与内容“分家”导致的空行感
+   1. 代码块深度修复：消除自动换行后的巨大空白
    ============================================================ */
 .language-plaintext.highlighter-rouge .rouge-table {
-    display: table !important;      /* 恢复表格布局，确保行号随内容高度伸缩 */
+    display: table !important;       /* 必须恢复表格布局以对齐行号 */
     width: 100% !important;
-    border-collapse: collapse !important;
+    border-collapse: collapse !important; /* 消除单元格间隙 */
+    margin-bottom: 0 !important;
 }
 
-/* 强制右侧内容代码自动换行，且不破坏左侧行号对齐 */
-/*.language-plaintext.highlighter-rouge .rouge-code pre {
-    white-space: pre-wrap !important; /* 开启自动换行 */
-/*    word-break: break-all !important; /* 强制长单词断行 */
-/*    margin: 0 !important;
+/* 强制内容换行，同时确保与左侧行号行高一致 */
+.language-plaintext.highlighter-rouge .rouge-code pre,
+.language-plaintext.highlighter-rouge .rouge-gutter pre {
+    white-space: pre-wrap !important;  /* 开启自动换行 */
+    word-break: break-all !important;  /* 强制断行 */
+    line-height: 1.4 !important;       /* 绝对统一行高 */
+    margin: 0 !important;              /* 消除可能导致空白的边距 */
+    padding: 0 !important;
 }
 
-/* 压缩行号(gutter)和内容(code)单元格的间距 */
 .language-plaintext.highlighter-rouge .rouge-gutter,
 .language-plaintext.highlighter-rouge .rouge-code {
     padding: 0 !important;
-    line-height: 1.4 !important;      /* 统一行高，建议 1.4 视觉更舒适 */
-    vertical-align: top !important;   /* 确保顶部对齐 */
+    vertical-align: top !important;    /* 确保顶部严格对齐 */
 }
 
-/* ============================================================
-   2. 容器优化：约束代码块整体高度并开启垂直滚动
-   ============================================================ */
+/* 代码块外层容器：约束高度并开启滚动 */
 .language-plaintext.highlighter-rouge .highlight {
-    max-height: 350px !important;    /* 约束最大高度 */
-    overflow-y: auto !important;     /* 允许垂直滚动 */
-    overflow-x: hidden !important;   /* 禁止横向滚动以强制换行 */
-    border-radius: 6px !important;
+    max-height: 400px !important;      /* 约束最大高度 */
+    overflow-y: auto !important;       /* 垂直滚动 */
+    overflow-x: hidden !important;     /* 禁止横向滚动以强制换行 */
+    border-radius: 8px !important;
 }
 
 /* ============================================================
-   3. 图片优化：约束最大宽高度（放一起）
-   解决 image_e44e01.jpg 中图片过大及比例问题
+   2. 图片与表格优化
    ============================================================ */
+/* 约束图片宽高，防止长图霸屏 */
 .post-content img {
-    max-width: 80% !important;    /* 宽度不超过容器的 80% */
-    max-height: 500px !important; /* 约束最大高度 */
-    height: auto !important;      /* 保持原始比例，防止拉伸 */
-    display: block !important;    /* 配合 margin 居中 */
-    margin: 1.5rem auto !important;
-    border-radius: 8px !important; /* 可选：加一点圆角 */
+    max-width: 85% !important;     /* 宽度限制 */
+    max-height: 500px !important;  /* 高度限制 */
+    height: auto !important;       /* 防变形 */
+    display: block !important;
+    margin: 1.5rem auto !important; /* 居中 */
+}
+
+/* 缩小正文表格文字 (对应你博文中的对比表格) */
+.post-content table {
+    font-size: 0.9rem !important;
 }
