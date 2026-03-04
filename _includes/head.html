@@ -136,4 +136,23 @@
   {% endif %}
 
   {% include metadata-hook.html %}
+
+      <style>
+      /* 针对所有 plaintext 代码块的全局强制样式 */
+      .language-plaintext.highlighter-rouge .highlight,
+      .language-plaintext.highlighter-rouge .rouge-table {
+        display: block !important;
+        max-height: 350px !important;    /* 强制窗口高度 */
+        overflow-y: auto !important;     /* 开启垂直滚动 */
+        overflow-x: hidden !important;   /* 彻底禁止横向滚动 */
+      }
+    
+      /* 强制代码内容在窗口内自动换行 */
+      .language-plaintext.highlighter-rouge code,
+      .language-plaintext.highlighter-rouge pre {
+        white-space: pre-wrap !important; 
+        word-break: break-all !important;
+        display: block !important;
+      }
+    </style>
 </head>
