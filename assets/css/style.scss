@@ -13,10 +13,10 @@
 }
 
 /* 强制右侧内容代码自动换行，且不破坏左侧行号对齐 */
-.language-plaintext.highlighter-rouge .rouge-code pre {
+/*.language-plaintext.highlighter-rouge .rouge-code pre {
     white-space: pre-wrap !important; /* 开启自动换行 */
-    word-break: break-all !important; /* 强制长单词断行 */
-    margin: 0 !important;
+/*    word-break: break-all !important; /* 强制长单词断行 */
+/*    margin: 0 !important;
 }
 
 /* 压缩行号(gutter)和内容(code)单元格的间距 */
