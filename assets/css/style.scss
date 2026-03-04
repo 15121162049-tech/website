@@ -1,12 +1,19 @@
 ---
-# 这一行三个横杠必须保留，它是 Jekyll 处理 SCSS 的开关
+# 这一行三个减号必须保留，Jekyll 才会编译这个文件
 ---
-/* 针对 plaintext 类型的内容块 */
-div[class*="language-plaintext"] .highlight,
-.language-plaintext pre.highlight {
-  max-height: 400px;         /* 你可以根据需要调整这个高度 */
-  overflow-y: auto !important; /* 强制开启纵向滚动 */
-  overflow-x: hidden !important; /* 禁止横向滚动 */
-  white-space: pre-wrap;     /* 核心：强制换行，这样就不需要横向滚动了 */
-  word-break: break-all;     /* 确保长单词也能换行 */
+@import "main";
+
+/* 在这里添加你的自定义代码 */
+
+/* 针对 plaintext 窗口的滚动优化 */
+.post-content .language-plaintext.highlighter-rouge .highlight {
+    max-height: 400px !important;  /* 固定窗口高度 */
+    overflow-y: auto !important;   /* 纵向滚动 */
+    overflow-x: hidden !important; /* 禁止横向滚动 */
+}
+
+/* 强制代码内容自动换行，不再往右延伸 */
+.post-content .language-plaintext.highlighter-rouge pre.highlight code {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
 }
