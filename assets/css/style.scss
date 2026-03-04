@@ -1,19 +1,24 @@
 ---
-# 这一行三个减号必须保留，Jekyll 才会编译这个文件
 ---
-@import "main";
+/* 这里的三个减号不能丢，它是 Jekyll 识别 SCSS 的开关 */
 
-/* 在这里添加你的自定义代码 */
-
-/* 针对 plaintext 窗口的滚动优化 */
-.post-content .language-plaintext.highlighter-rouge .highlight {
-    max-height: 400px !important;  /* 固定窗口高度 */
-    overflow-y: auto !important;   /* 纵向滚动 */
-    overflow-x: hidden !important; /* 禁止横向滚动 */
+/* 1. 针对代码块的外层容器 */
+.post-content .language-plaintext.highlighter-rouge .highlight,
+.post-content .language-plaintext.highlighter-rouge .rouge-table {
+  max-height: 300px !important;    /* 强制固定高度 */
+  overflow-y: auto !important;     /* 强制纵向滚动 */
+  overflow-x: hidden !important;   /* 彻底关掉横向滚动 */
+  display: block !important;
 }
 
-/* 强制代码内容自动换行，不再往右延伸 */
-.post-content .language-plaintext.highlighter-rouge pre.highlight code {
-    white-space: pre-wrap !important;
-    word-break: break-all !important;
+/* 2. 针对代码块的内部代码，强制换行 */
+.post-content .language-plaintext.highlighter-rouge code {
+  white-space: pre-wrap !important; /* 核心：允许自动折行 */
+  word-break: break-all !important; /* 确保长单词也能断开换行 */
+  display: block !important;
+}
+
+/* 3. 隐藏可能出现的横向滚动条（保险起见） */
+.post-content .language-plaintext.highlighter-rouge pre {
+  overflow-x: hidden !important;
 }
