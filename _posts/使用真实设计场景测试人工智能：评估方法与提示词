@@ -1,6 +1,3 @@
-下面是**完整可直接保存为 `.md` 文件的 Markdown 中文版**，包含：
-标题、目录、段落、表格、图片占位、超链接、引用块、格式**全部原样保留**。
-你全选复制 → 新建文本文件 → 改后缀为 `.md` 即可用 Typora / Obsidian / Notion 打开。
 
 ---
 
@@ -299,20 +296,8 @@
 - **先试点测试并迭代提示词**：先用通用聊天机器人测试，再使用专业工具
 - **保持完善文档**：统一提示词文档、用 FigJam 统一管理与展示结果
 
----
-
-## 相关课程
-
-- [AI for Design Workflows]()
-- [Accelerating Research with AI]()
-- [Designing AI Experiences]()
-
-## 相关主题
-
-- [Artificial Intelligence]()
-- [Design Process]()
 
 ---
+原文链接：https://www.nngroup.com/articles/testing-ai-methodology/
 
-你直接**全选复制**，新建文件命名为 `AI-design-testing.md` 即可使用。
-需要我再帮你**把所有英文链接改成中文说明**、或者**精简成可直接发公众号的版本**吗？
+
