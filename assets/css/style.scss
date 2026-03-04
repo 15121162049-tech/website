@@ -34,19 +34,19 @@
     overflow-x: hidden !important;  /* 禁止横向滚动以强制换行 */
 }
 
-/* 自定义灰色提示框 - 避开继承直接写样式 */
+/* 直接定义样式，不使用 @extend 避免编译错误 */
 .prompt-note {
   display: flex;
   padding: 1rem 1rem 1rem 3rem;
   margin: 1.5rem 0;
-  border-left: 0.25rem solid #adb5bd; /* 灰色边框 */
-  background-color: rgba(173, 181, 189, 0.1); /* 浅灰色背景，适配深浅模式 */
+  border-left: 0.25rem solid #adb5bd;
+  background-color: rgba(173, 181, 189, 0.1);
   border-radius: 0.25rem;
   position: relative;
   color: var(--main-color);
 
   &::before {
-    content: "\f05a"; /* FontAwesome 图标 */
+    content: "\f05a"; 
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
     position: absolute;
