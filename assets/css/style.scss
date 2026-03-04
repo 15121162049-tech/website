@@ -1,1 +1,5 @@
-/* 
+/* 让代码块内的文字自动换行 */
+code, pre {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+}
