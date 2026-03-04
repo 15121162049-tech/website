@@ -34,13 +34,25 @@
     overflow-x: hidden !important;  /* 禁止横向滚动以强制换行 */
 }
 
-/* 自定义灰色提示框 */
+/* 自定义灰色提示框 - 避开继承直接写样式 */
 .prompt-note {
-  @extend %prompt; /* 继承 Chirpy 提示框的基础样式 */
-  border-left-color: #6c757d; /* 灰色边框 */
-  background-color: rgba(108, 117, 125, 0.1); /* 浅灰色背景 */
+  display: flex;
+  padding: 1rem 1rem 1rem 3rem;
+  margin: 1.5rem 0;
+  border-left: 0.25rem solid #adb5bd; /* 灰色边框 */
+  background-color: rgba(173, 181, 189, 0.1); /* 浅灰色背景，适配深浅模式 */
+  border-radius: 0.25rem;
+  position: relative;
+  color: var(--main-color);
+
   &::before {
-    content: "\f05a"; /* 使用 FontAwesome 的信息图标 */
-    color: #6c757d;
+    content: "\f05a"; /* FontAwesome 图标 */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    color: #adb5bd;
+    font-size: 1.25rem;
   }
 }
