@@ -2,53 +2,48 @@
 ---
 @import "main";
 
-/* ============================================================
-   1. 代码块深度修复：消除自动换行后的巨大空白
-   ============================================================ */
-.language-plaintext.highlighter-rouge .rouge-table {
-    display: table !important;       /* 必须恢复表格布局以对齐行号 */
+/* --- 1. 终极修复：代码块行号对齐与空白消除 --- */
+.post-content .language-plaintext.highlighter-rouge {
+    margin-bottom: 1rem !important; /* 限制外层容器间距 */
+}
+
+/* 核心：强制恢复表格布局，解决 image_e44e01.jpg 的错位 */
+.post-content .language-plaintext.highlighter-rouge .rouge-table {
+    display: table !important;
     width: 100% !important;
-    border-collapse: collapse !important; /* 消除单元格间隙 */
-    margin-bottom: 0 !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
 }
 
-/* 强制内容换行，同时确保与左侧行号行高一致 */
-.language-plaintext.highlighter-rouge .rouge-code pre,
-.language-plaintext.highlighter-rouge .rouge-gutter pre {
-    white-space: pre-wrap !important;  /* 开启自动换行 */
-    word-break: break-all !important;  /* 强制断行 */
-    line-height: 1.4 !important;       /* 绝对统一行高 */
-    margin: 0 !important;              /* 消除可能导致空白的边距 */
+/* 统一行号和代码单元格的行高与对齐 */
+.post-content .language-plaintext.highlighter-rouge .rouge-gutter,
+.post-content .language-plaintext.highlighter-rouge .rouge-code {
     padding: 0 !important;
+    line-height: 1.4 !important;    /* 必须完全一致 */
+    vertical-align: top !important; /* 顶部对齐 */
 }
 
-.language-plaintext.highlighter-rouge .rouge-gutter,
-.language-plaintext.highlighter-rouge .rouge-code {
-    padding: 0 !important;
-    vertical-align: top !important;    /* 确保顶部严格对齐 */
+/* 解决换行导致的额外空白：强制 pre 标签间距归零 */
+.post-content .language-plaintext.highlighter-rouge pre {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+    margin: 0 !important;
+    padding: 0 0.5rem !important;
 }
 
-/* 代码块外层容器：约束高度并开启滚动 */
-.language-plaintext.highlighter-rouge .highlight {
-    max-height: 400px !important;      /* 约束最大高度 */
-    overflow-y: auto !important;       /* 垂直滚动 */
-    overflow-x: hidden !important;     /* 禁止横向滚动以强制换行 */
+/* 约束高度：直接作用于带滚动条的 highlight 容器 */
+.post-content .language-plaintext.highlighter-rouge .highlight {
+    max-height: 350px !important;   /* 你在 image_d877e4.jpg 中要求的数值 */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     border-radius: 8px !important;
 }
 
-/* ============================================================
-   2. 图片与表格优化
-   ============================================================ */
-/* 约束图片宽高，防止长图霸屏 */
+/* --- 2. 图片优化：约束宽高且不拉伸 --- */
 .post-content img {
-    max-width: 85% !important;     /* 宽度限制 */
-    max-height: 500px !important;  /* 高度限制 */
-    height: auto !important;       /* 防变形 */
+    max-width: 80% !important;      /* 稍微收窄，视觉效果更好 */
+    max-height: 500px !important;   /* 约束高度 */
+    height: auto !important;        /* 关键：防变形 */
     display: block !important;
     margin: 1.5rem auto !important; /* 居中 */
-}
-
-/* 缩小正文表格文字 (对应你博文中的对比表格) */
-.post-content table {
-    font-size: 0.9rem !important;
 }
