@@ -1,28 +1,15 @@
 ---
 # 这一行三个横杠必须保留，它是 Jekyll 处理 SCSS 的开关
 ---
-
-/* 强行穿透所有层级 */
-* {
-  --code-header-height: 2.25rem;
-}
-
-pre, code, .highlight, .chroma {
+/* 代码块自动换行 */
+.content pre,
+.content pre code {
   white-space: pre-wrap !important;
-  word-wrap: break-word !important;
-  word-break: break-all !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
   overflow-x: hidden !important;
 }
 
-/* 专门针对 Chirpy 的代码容器 */
-div[class^="language-"] pre,
-div[class^="language-"] code {
-  white-space: pre-wrap !important;
-  display: block !important;
-}
-
-/* 移除导致横向滚动的固定布局 */
-.post-content pre > code {
-  display: inline-block !important;
-  width: 100% !important;
+.highlight {
+  overflow-x: visible !important;
 }
