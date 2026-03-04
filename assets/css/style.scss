@@ -1,15 +1,12 @@
 ---
 # 这一行三个横杠必须保留，它是 Jekyll 处理 SCSS 的开关
 ---
-/* 代码块自动换行 */
-.content pre,
-.content pre code {
-  white-space: pre-wrap !important;
-  word-break: break-word !important;
-  overflow-wrap: break-word !important;
-  overflow-x: hidden !important;
-}
-
-.highlight {
-  overflow-x: visible !important;
+/* 针对 plaintext 类型的内容块 */
+div[class*="language-plaintext"] .highlight,
+.language-plaintext pre.highlight {
+  max-height: 400px;         /* 你可以根据需要调整这个高度 */
+  overflow-y: auto !important; /* 强制开启纵向滚动 */
+  overflow-x: hidden !important; /* 禁止横向滚动 */
+  white-space: pre-wrap;     /* 核心：强制换行，这样就不需要横向滚动了 */
+  word-break: break-all;     /* 确保长单词也能换行 */
 }
