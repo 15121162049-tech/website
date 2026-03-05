@@ -9,3 +9,15 @@
 ';
 
 /* append your custom style below */
+// 上方是主题原有代码，别动
+// 直接在最后粘贴你的自定义样式
+
+/* ========== 你的自定义排版美化 ========== */
+.content {
+  text-align: justify !important;
+  line-height: 1.75;
+}
+.content pre, .content pre code {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
