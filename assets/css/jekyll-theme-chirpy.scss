@@ -168,3 +168,27 @@ div.language-plaintext.highlighter-rouge {
   margin-top: 0px !important;
   margin-bottom: 0px !important;
 }
+
+/* --- 仅针对 Plaintext 代码块：去背景与透明化 --- */
+
+/* 1. 移除代码块容器和内部表格的背景 */
+div.language-plaintext.highlighter-rouge,
+div.language-plaintext.highlighter-rouge .highlight,
+div.language-plaintext.highlighter-rouge table.rouge-table,
+div.language-plaintext.highlighter-rouge table.rouge-table td {
+  background: transparent !important; /* 彻底透明化 */
+  background-color: transparent !important;
+  border: none !important; /* 移除可能存在的边框线 */
+  box-shadow: none !important;
+}
+
+/* 2. 移除 Plaintext 内部单元格的 Padding（解决你之前看到的橙色区域） */
+div.language-plaintext.highlighter-rouge table.rouge-table td {
+  padding: 0 !important;
+}
+
+/* 3. 确保文字颜色在无背景下依然可见 */
+div.language-plaintext.highlighter-rouge code {
+  color: var(--text-color) !important; 
+  background: none !important;
+}
