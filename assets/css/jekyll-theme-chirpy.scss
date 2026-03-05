@@ -45,4 +45,22 @@ main #post blockquote.prompt-note {
   
   p { margin: 0 !important; }
 }
+/* --- 隐藏 plaintext 的行号并保持自动换行 --- */
+.post-content .language-plaintext.highlighter-rouge {
+  /* 1. 彻底隐藏左侧行号列 */
+  .rouge-gutter {
+    display: none !important;
+  }
 
+  /* 2. 移除代码列的边框和多余边距 */
+  .rouge-code {
+    padding-left: 0.5rem !important;
+    border-left: none !important;
+  }
+
+  /* 3. 确保代码依然可以自动换行 */
+  pre {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+  }
+}
