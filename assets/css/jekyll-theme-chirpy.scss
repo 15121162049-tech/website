@@ -10,7 +10,7 @@
 
 /* append your custom style below */
 /* 上方是主题原有代码，别动*/
-@import "main";
+
 /* --- 修复：自动换行不产生新行号 --- */
 
 /* 1. 强制恢复表格布局，这是对齐行号的关键 */
@@ -52,7 +52,7 @@ main #post blockquote.prompt-note {
   border-radius: 0.5rem !important;
   font-style: normal !important; /* 取消默认的斜体 */
   position: relative !important;
-
+}
   /* 确保内部文字和加粗生效 */
   p {
     margin: 0 !important;
