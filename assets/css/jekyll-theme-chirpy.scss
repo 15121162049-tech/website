@@ -5,43 +5,41 @@
 
 /* append your custom style below */
 
-/* * 1. 普通表格美化：
- * 实现内外边框、背景色、圆角，并强制文字自动换行
+/* * [强制换行与边框方案] 
+ * 针对普通表格进行深度锁定，确保不影响代码块和提示框
  */
-.post-content table:not(.rouge-table):not([class*='prompt-']) {
+.post > .post-content table:not(.rouge-table):not([class*='prompt-']) {
   display: table !important;
   width: 100% !important;
-  table-layout: fixed !important; /* 核心：固定布局是防止横向滚动的关键 */
-  border-collapse: separate !important;
+  /* 必须开启 fixed 布局，否则单元格会被长字符（如工具名）无限撑开 */
+  table-layout: fixed !important; 
+  border-collapse: separate !important; 
   border-spacing: 0 !important;
   border: 1px solid var(--main-border-color) !important;
   border-radius: 8px !important;
   background-color: var(--card-bg) !important;
   overflow: hidden !important;
-  margin: 1.5rem 0 !important;
 
+  /* 针对内部所有单元格强制断行 */
   th, td {
     border-right: 1px solid var(--main-border-color) !important;
     border-bottom: 1px solid var(--main-border-color) !important;
     padding: 10px 15px !important;
     
-    /* 强制换行逻辑：解决 image_32a6c7 里的溢出问题 */
+    /* 强制自动换行组合拳 */
     white-space: normal !important; 
     word-break: break-all !important; 
     overflow-wrap: break-word !important;
   }
 
-  // 移除最右侧和底部重复的边框线
+  /* 移除边缘多余线条 */
   th:last-child, td:last-child { border-right: none !important; }
   tr:last-child td { border-bottom: none !important; }
 }
 
-/* * 2. 兼容性处理：
- * 显式确保 Info 块和代码块能够自动换行，但不添加边框和背景
- */
+// 保持 Plaintext 和 Info 块的原样自动换行
 .post-content .highlight pre, 
 .post-content [class*='prompt-'] {
-  white-space: pre-wrap !important; 
+  white-space: pre-wrap !important;
   word-break: break-all !important;
-  overflow-wrap: break-word !important;
 }
