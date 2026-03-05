@@ -103,4 +103,48 @@ table:not([class*='prompt-']):not(.plaintext) th:last-child { border-right: none
   border: none !important;
 }
 
+/* --- 仅针对 Plaintext 代码块的深度压缩优化 --- */
+
+/* 1. 压缩代码块整体的上下外边距 */
+div.language-plaintext.highlighter-rouge {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* 2. 移除顶部的 "Plaintext" 标题栏（这样可以腾出大量空间） */
+div.language-plaintext .code-header {
+  display: none !important;
+}
+
+/* 3. 压缩左侧行号列 (gutter) 的宽度 */
+div.language-plaintext td.gutter {
+  padding-left: 4px !important;   /* 缩小行号左侧间距 */
+  text-align: center !important;
+}
+
+/* 4. 压缩行号本身的字体和间距 */
+div.language-plaintext td.gutter pre {
+  font-size: 0.75rem !important;
+  line-height: 1.5 !important;
+}
+
+/* 5. 压缩代码内容区域 (code) 的上下内边距 */
+div.language-plaintext td.code {
+  padding-top: 4px !important;    /* 压缩内容顶部间距 */
+  padding-bottom: 4px !important; /* 压缩内容底部间距 */
+}
+
+/* 6. 强制代码文字换行，防止长文本横向撑开影响视觉 */
+div.language-plaintext td.code pre {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  line-height: 1.5 !important;
+}
+
+/* 7. 移除代码背景块的默认额外填充 */
+div.language-plaintext .highlight {
+  padding: 0 !important;
+  border: 1px solid var(--main-border-color) !important; /* 给灰色块加个细边框增加精致感 */
+}
+
 
