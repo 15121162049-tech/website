@@ -2,41 +2,41 @@
 ---
 
 /* prettier-ignore */
-@use 'main
-{%- if jekyll.environment == 'production' -%}
-  .bundle
-{%- endif -%} ';
+@use 'main{%- if jekyll.environment == 'production' -%}.bundle{%- endif -%}' as *;
 
 /* append your custom style below */
-/* 上方是主题原有代码，别动*/
 
-/* --- 彻底隐藏 Plaintext 行号并强制铺满换行 --- */
-
-/* 1. 必须针对 rouge-table 进行破坏性重组 */
-.post-content .language-plaintext.highlighter-rouge table.rouge-table {
-  display: block !important; /* 将表格转为块级，取消列宽限制 */
+/* --- 1. 强力隐藏 Plaintext 行号并强制铺满换行 --- */
+/* 增加 html 和 body 前缀以极大提升 CSS 权重 */
+html body .post-content .language-plaintext.highlighter-rouge table.rouge-table {
+  display: block !important; /* 破坏表格结构以支持隐藏列 */
   width: 100% !important;
 
-  /* 2. 移除行号所在的单元格 */
-  tbody > tr > td.rouge-gutter {
-    display: none !important; /* 深度定位并抹除 */
+  /* 使用嵌套选择器精准定位 */
+  &, tbody, tr, td {
+    display: block !important; 
+    width: 100% !important;
   }
 
-  /* 3. 让代码所在的单元格横向撑满 */
-  tbody > tr > td.rouge-code {
-    display: block !important;
-    width: 100% !important;
-    padding: 0.6rem 1rem !important;
+  /* 彻底抹除行号列 */
+  td.rouge-gutter {
+    display: none !important;
+  }
+
+  /* 让代码区域横向撑满 */
+  td.rouge-code {
+    padding: 0.8rem 1rem !important;
 
     pre {
-      white-space: pre-wrap !important; /* 强制换行 */
+      white-space: pre-wrap !important; /* 核心：开启自动换行 */
       word-break: break-all !important;
       margin: 0 !important;
+      overflow-x: visible !important; /* 防止出现多余滚动条 */
     }
   }
 }
 
-/* --- 提示框样式（保持不变） --- */
+/* --- 2. 提示框样式（已修正嵌套逻辑） --- */
 main #post blockquote.prompt-note {
   background-color: #f6f6f6 !important;
   border-left: 0.25rem solid #adb5bd !important;
@@ -44,6 +44,7 @@ main #post blockquote.prompt-note {
   position: relative !important;
   font-style: normal !important;
 
+  /* 确保 & 在大括号内，避免顶级选择器错误 */
   &::before {
     content: "\f05a" !important;
     font-family: "Font Awesome 5 Free" !important;
@@ -51,5 +52,8 @@ main #post blockquote.prompt-note {
     position: absolute !important;
     left: 1rem !important;
     top: 1.1rem !important;
+    color: #adb5bd !important;
   }
+
+  p { margin: 0 !important; }
 }
