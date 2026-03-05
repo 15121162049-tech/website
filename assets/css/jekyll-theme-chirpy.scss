@@ -142,4 +142,22 @@ div.language-plaintext .highlight {
   border: 1px solid var(--main-border-color) !important; /* 给灰色块加个细边框增加精致感 */
 }
 
+/* 精准锁定 plaintext 渲染出的 Rouge 表格单元格 */
+div.language-plaintext.highlighter-rouge table.rouge-table td {
+  padding: 0 !important;
+}
+
+/* 如果你想让代码块整体更紧凑，也可以去掉它的上下外边距 (Margin) */
+div.language-plaintext.highlighter-rouge {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* 针对内部 pre 标签可能自带的默认间距进行清空 */
+div.language-plaintext.highlighter-rouge pre {
+  margin: 0 !important;
+  padding: 4px 0 !important; /* 建议保留极小的 4px 视觉留白，否则文字会顶死边框 */
+}
+
+
 
