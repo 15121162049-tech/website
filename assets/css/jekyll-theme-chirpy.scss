@@ -128,3 +128,54 @@ thead th {
   background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
+/* --- 1. 普通表格：保留外边框、圆角和背景 --- */
+table:not(.plaintext) {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border: 1px solid var(--main-border-color) !important;
+  border-radius: 10px !important;
+  background-color: var(--card-bg) !important;
+  overflow: hidden;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+table:not(.plaintext) th, 
+table:not(.plaintext) td {
+  border-right: 1px solid var(--main-border-color) !important;
+  border-bottom: 1px solid var(--main-border-color) !important;
+  padding: 10px 15px;
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+/* 清除普通表格末尾多余的边线 */
+table:not(.plaintext) tr:last-child td { border-bottom: none !important; }
+table:not(.plaintext) td:last-child, 
+table:not(.plaintext) th:last-child { border-right: none !important; }
+
+/* --- 2. 灰色信息块 (针对你之前的 info 需求) --- */
+.prompt-info {
+  background-color: rgba(128, 128, 128, 0.08) !important;
+  border: none !important; /* 如果不需要外框则设为 none */
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* --- 3. 纯文本/引用块：无边框、无背景 --- */
+blockquote, .plaintext {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 1rem 0 !important;
+  color: var(--main-color);
+}
+
+/* 确保纯文本块内的文字正常换行 */
+.plaintext p {
+  word-break: break-word;
+  line-height: 1.6;
+}
+
+
