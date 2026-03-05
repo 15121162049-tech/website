@@ -111,14 +111,9 @@ div.language-plaintext.highlighter-rouge {
   margin-bottom: 0.5rem !important;
 }
 
-/* 2. 移除顶部的 "Plaintext" 标题栏（这样可以腾出大量空间） */
-div.language-plaintext .code-header {
-  display: none !important;
-}
-
 /* 3. 压缩左侧行号列 (gutter) 的宽度 */
 div.language-plaintext td.gutter {
-  padding-left: 4px !important;   /* 缩小行号左侧间距 */
+  padding-left: 0px !important;   /* 缩小行号左侧间距 */
   text-align: center !important;
 }
 
