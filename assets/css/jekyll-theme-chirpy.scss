@@ -158,6 +158,10 @@ div.language-plaintext.highlighter-rouge pre {
   margin: 0 !important;
   padding: 4px 0 !important; /* 建议保留极小的 4px 视觉留白，否则文字会顶死边框 */
 }
-
+/* 2. 消除代码内容容器的内外边距 */
+div.language-plaintext.highlighter-rouge .highlight pre {
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
 
