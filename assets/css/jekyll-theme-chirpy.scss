@@ -5,41 +5,24 @@
 
 /* append your custom style below */
 
-/* * [普通表格换行强化方案]
- * 目标：实现内外边框、背景色，并强制文字在单元格内折行，消除横向滚动条
- */
-.post-content table:not(.rouge-table):not([class*='prompt-']) {
-  display: table !important;
-  width: 100% !important; /* 必须：占用容器全部宽度 */
-  table-layout: fixed !important; /* 核心：强制所有列宽加起来等于100%，不准外扩 */
+/* --- 强化版普通表格样式 --- */
+table:not([class*='prompt-']):not(.rouge-table) {
+  table-layout: fixed !important; /* 必须：强制固定布局，防止撑开 */
+  width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border: 1px solid var(--main-border-color) !important;
-  border-radius: 8px !important;
+  border: 2px solid var(--main-border-color) !important;
+  border-radius: 12px !important;
   background-color: var(--card-bg) !important;
-  overflow: hidden !important;
+  overflow: hidden;
+  margin: 1.5rem 0;
 
   th, td {
-    padding: 10px 15px !important;
     border-right: 1px solid var(--main-border-color) !important;
     border-bottom: 1px solid var(--main-border-color) !important;
-    
-    /* --- 强制换行逻辑组合 --- */
-    white-space: normal !important;      /* 允许正常换行，覆盖可能的 nowrap */
-    word-break: break-all !important;    /* 强制在任意字符间断行，防止长文本撑开列宽 */
-    overflow-wrap: break-word !important; /* 现代浏览器兼容断行 */
+    padding: 10px 15px;
+    white-space: normal !important; /* 允许换行 */
+    word-break: break-all !important; /* 核心：强制字符级断行 */
+    overflow-wrap: break-word !important;
   }
-
-  /* 移除边缘重复线条 */
-  th:last-child, td:last-child { border-right: none !important; }
-  tr:last-child td { border-bottom: none !important; }
-}
-
-/* * 保持 Info 和 Plaintext 块的原有自动换行
- * 确保它们不会被上面的表格样式误伤
- */
-.post-content .highlight pre, 
-.post-content [class*='prompt-'] {
-  white-space: pre-wrap !important; 
-  word-break: break-all !important;
 }
