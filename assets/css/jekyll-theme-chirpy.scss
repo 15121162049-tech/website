@@ -5,41 +5,34 @@
 
 /* append your custom style below */
 
-/* * [强制换行与边框方案] 
- * 针对普通表格进行深度锁定，确保不影响代码块和提示框
- */
-.post > .post-content table:not(.rouge-table):not([class*='prompt-']) {
+/* 1. 强制表格容器不产生横向滚动 */
+.post-content {
+  overflow-x: visible !important; /* 允许溢出内容可见而非产生滚动条 */
+}
+
+/* 2. 深度锁定普通表格：强制固定布局 */
+.post-content table:not(.rouge-table):not([class*='prompt-']) {
   display: table !important;
   width: 100% !important;
-  /* 必须开启 fixed 布局，否则单元格会被长字符（如工具名）无限撑开 */
-  table-layout: fixed !important; 
-  border-collapse: separate !important; 
+  table-layout: fixed !important; /* 核心：强制所有列宽加起来等于100%，不准撑开 */
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  border-collapse: separate !important;
   border-spacing: 0 !important;
   border: 1px solid var(--main-border-color) !important;
   border-radius: 8px !important;
   background-color: var(--card-bg) !important;
-  overflow: hidden !important;
 
-  /* 针对内部所有单元格强制断行 */
+  /* 单元格层级的强制断行 */
   th, td {
+    white-space: normal !important; /* 覆盖可能的 nowrap 设置 */
+    word-break: break-all !important; /* 强制在字符间断行，防止长工具名撑开列宽 */
+    padding: 10px 15px !important;
     border-right: 1px solid var(--main-border-color) !important;
     border-bottom: 1px solid var(--main-border-color) !important;
-    padding: 10px 15px !important;
-    
-    /* 强制自动换行组合拳 */
-    white-space: normal !important; 
-    word-break: break-all !important; 
-    overflow-wrap: break-word !important;
   }
 
-  /* 移除边缘多余线条 */
+  /* 移除边缘重复线 */
   th:last-child, td:last-child { border-right: none !important; }
   tr:last-child td { border-bottom: none !important; }
-}
-
-// 保持 Plaintext 和 Info 块的原样自动换行
-.post-content .highlight pre, 
-.post-content [class*='prompt-'] {
-  white-space: pre-wrap !important;
-  word-break: break-all !important;
 }
