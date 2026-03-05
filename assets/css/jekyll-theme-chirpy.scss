@@ -55,127 +55,53 @@ main #post blockquote.prompt-note {
 }
 
 /* ---   3. 表格整体优化样式修改        --- */
-
-/* --- 表格整体样式优化 --- */
-table {
-  /* 1. 核心修正：必须使用 separate 才能让圆角生效 */
+/* --- 1. 普通表格 (仅针对没有任何特定类的表格进行美化) --- */
+/* 使用 :not 选择器排除掉带有 .prompt-info 或在 .prompt-info 容器内的表格 */
+table:not([class*='prompt-']):not(.plaintext) {
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  
-  /* 2. 背景与圆角 */
-  background-color: var(--card-bg) !important;
-  border-radius: 10px !important; /* 调大一点圆角更美观 */
-  overflow: hidden;
-  
-  /* 3. 外边框 */
   border: 2px solid var(--main-border-color) !important;
-  margin: 1rem 0;
-  width: 100%;
-}
-
-/* --- 单元格样式优化 --- */
-th, td {
-  /* 4. 内部边线：只设置右边和底边，避免粗细不均 */
-  border-right: 1px solid var(--main-border-color) !important;
-  border-bottom: 1px solid var(--main-border-color) !important;
-  padding: 10px 15px;
-  
-  /* 5. 文字换行逻辑 */
-  white-space: normal !important;
-  word-break: break-word;
-}
-
-/* --- 细节修整 --- */
-
-/* 去除最后一列多余的右边框 */
-th:last-child, td:last-child {
-  border-right: none !important;
-}
-
-/* 去除最后一行多余的底边框 */
-tr:last-child td {
-  border-bottom: none !important;
-}
-
-/* 表头加深背景（可选，增加层级感） */
-thead th {
-  background-color: rgba(var(--main-border-color-rgb), 0.1);
-  font-weight: bold;
-}
-
-/* --- 针对 .prompt-info 块的灰色背景优化 --- */
-.prompt-info {
-  /* 使用透明度较低的灰色，这样可以透出底色，更自然 */
-  background-color: rgba(128, 128, 128, 0.08) !important; 
-  border-radius: 12px;
-  padding: 1px; /* 稍微给一点内边距，让内部表格更美观 */
-}
-
-/* 如果你想让整个表格内部呈现灰色 */
-.prompt-info table {
-  background-color: var(--card-bg) !important; /* 表格本身保持卡片背景 */
-  border: 1px solid var(--main-border-color) !important;
-}
-
-/* 表头背景改为更深一点的灰色 */
-.prompt-info thead th {
-  background-color: rgba(128, 128, 128, 0.15) !important;
-  color: var(--heading-color) !important;
-}
-
-/* 深色模式下的特殊适配，确保灰色不会太刺眼 */
-[data-mode='dark'] .prompt-info {
-  background-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* --- 1. 普通表格：保留外边框、圆角和背景 --- */
-table:not(.plaintext) {
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-  border: 1px solid var(--main-border-color) !important;
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   background-color: var(--card-bg) !important;
   overflow: hidden;
   width: 100%;
   margin: 1.5rem 0;
 }
 
-table:not(.plaintext) th, 
-table:not(.plaintext) td {
+/* 为普通表格的单元格设置边框和换行 */
+table:not([class*='prompt-']):not(.plaintext) th,
+table:not([class*='prompt-']):not(.plaintext) td {
   border-right: 1px solid var(--main-border-color) !important;
   border-bottom: 1px solid var(--main-border-color) !important;
   padding: 10px 15px;
   white-space: normal !important;
   word-break: break-word;
+  min-width: 80px;
 }
 
-/* 清除普通表格末尾多余的边线 */
-table:not(.plaintext) tr:last-child td { border-bottom: none !important; }
-table:not(.plaintext) td:last-child, 
-table:not(.plaintext) th:last-child { border-right: none !important; }
+/* 清除普通表格最后一行和最后一列的多余边线 */
+table:not([class*='prompt-']):not(.plaintext) tr:last-child td { border-bottom: none !important; }
+table:not([class*='prompt-']):not(.plaintext) td:last-child, 
+table:not([class*='prompt-']):not(.plaintext) th:last-child { border-right: none !important; }
 
-/* --- 2. 灰色信息块 (针对你之前的 info 需求) --- */
+
+/* --- 2. Info 提示块 (保持 Chirpy 默认) --- */
+/* Chirpy 的 .prompt-info 默认已经有左侧图标、特定背景色和左边框。
+   我们不需要在 CSS 里写太多，只要确保上面的“普通表格”样式不覆盖它即可。
+*/
 .prompt-info {
-  background-color: rgba(128, 128, 128, 0.08) !important;
-  border: none !important; /* 如果不需要外框则设为 none */
-  padding: 1rem;
-  border-radius: 8px;
+  /* 这里不需要写新样式，它会自动沿用主题定义 */
+  margin: 1.5rem 0 !important;
 }
 
-/* --- 3. 纯文本/引用块：无边框、无背景 --- */
-blockquote, .plaintext {
-  background: none !important;
+
+/* --- 3. Plaintext/代码块 (保持 Chirpy 默认) --- */
+/* 针对 Markdown 中的 ```plaintext 代码块。
+   Chirpy 默认会给它深色背景、等宽字体和内部间距。
+*/
+.language-plaintext {
+  /* 保持默认的背景色、圆角和字体样式 */
   border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 1rem 0 !important;
-  color: var(--main-color);
-}
-
-/* 确保纯文本块内的文字正常换行 */
-.plaintext p {
-  word-break: break-word;
-  line-height: 1.6;
 }
 
 
