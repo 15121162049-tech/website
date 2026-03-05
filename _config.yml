@@ -117,9 +117,9 @@ kramdown:
   syntax_highlighter_opts: 
     css_class: highlight
     span:
-      line_numbers: false
+      line_numbers: true
     block:
-      line_numbers: false
+      line_numbers: true
       start_line: 1
 
 collections:
