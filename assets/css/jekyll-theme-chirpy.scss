@@ -11,59 +11,28 @@
 /* append your custom style below */
 /* 上方是主题原有代码，别动*/
 
-/* --- 修复：自动换行不产生新行号 --- */
+/* --- 修复：代码块自动换行与提示框样式 --- */
 
-/* 1. 强制恢复表格布局，这是对齐行号的关键 */
+/* 1. 强制 plaintext 代码块自动换行 */
 .post-content .language-plaintext.highlighter-rouge .rouge-table {
-    display: table !important;
-    width: 100% !important;
-    border-collapse: collapse !important;
+  display: table !important;
+  width: 100% !important;
 }
 
-/* 2. 确保行号和代码块在垂直方向上顶部对齐 */
-.post-content .language-plaintext.highlighter-rouge .rouge-gutter,
-.post-content .language-plaintext.highlighter-rouge .rouge-code {
-    padding: 0 !important;
-    line-height: 1.4 !important;    /* 统一行高 */
-    vertical-align: top !important; /* 确保换行时行号依然对准第一行 */
-}
-
-/* 3. 强制右侧内容自动换行，且不影响左侧行号计数 */
 .post-content .language-plaintext.highlighter-rouge .rouge-code pre {
-    white-space: pre-wrap !important; /* 允许自动换行 */
-    word-break: break-all !important; /* 强制长单词断行 */
-    margin: 0 !important;
-    padding: 0 0.5rem !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
 }
 
-/* 4. 解决 image_d816ab.jpg 中的容器溢出问题 */
-.post-content .language-plaintext.highlighter-rouge .highlight {
-    max-height: 350px !important;   /* 约束高度 */
-    overflow-y: auto !important;    /* 开启垂直滚动 */
-    overflow-x: hidden !important;  /* 禁止横向滚动以强制换行 */
-}
-
-/* 强制覆盖：自定义灰色背景提示框 */
+/* 2. 修正后的提示框样式（修复了 &::before 报错） */
 main #post blockquote.prompt-note {
-  background-color: #f6f6f6 !important; /* 明显的浅灰色背景 */
-  border-left: 0.25rem solid #adb5bd !important; /* 灰色左边框 */
-  color: var(--main-color) !important;
+  background-color: #f6f6f6 !important;
+  border-left: 0.25rem solid #adb5bd !important;
   padding: 1rem 1rem 1rem 3rem !important;
-  border-radius: 0.5rem !important;
-  font-style: normal !important; /* 取消默认的斜体 */
   position: relative !important;
-}
-  /* 确保内部文字和加粗生效 */
-  p {
-    margin: 0 !important;
-  }
-  
-  strong {
-    color: #000 !important; /* 强制加粗文字为纯黑色，视觉更明显 */
-    font-weight: bold !important;
-  }
+  font-style: normal !important;
 
-  /* 图标配置 */
+  /* 这里的 & 符号必须在大括号内部使用 */
   &::before {
     content: "\f05a" !important;
     font-family: "Font Awesome 5 Free" !important;
@@ -73,4 +42,7 @@ main #post blockquote.prompt-note {
     top: 1.1rem !important;
     color: #adb5bd !important;
   }
+  
+  p { margin: 0 !important; }
+}
 
