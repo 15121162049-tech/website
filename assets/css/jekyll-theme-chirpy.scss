@@ -27,35 +27,37 @@ table:not([class*='prompt-']):not(.rouge-table) {
   }
 }
 
-/* --- 修复 Plaintext 行号与文本对齐问题 --- */
+/* --- 修复 Plaintext 行号与代码文本错位 --- */
 
-div.language-plaintext.highlighter-rouge table.rouge-table {
-  /* 确保表格行高一致 */
-  line-height: 1.5 !important; 
+/* 1. 统一代码块内表格的垂直对齐和行高 */
+.post-content .language-plaintext .rouge-table {
+  border-collapse: collapse !important;
+  line-height: 1.5 !important; /* 确保每一行的高度基准一致 */
 
-  /* 针对左侧行号单元格 (gutter) */
+  /* 2. 针对左侧行号单元格 (gutter) */
   td.gutter {
-    padding-top: 0.8rem !important; /* 必须与下方 code 区域保持一致 */
-    vertical-align: top !important;  /* 确保顶部对齐 */
+    padding: 0.8rem 0.5rem !important; /* 必须与下方 code 区域完全一致 */
+    vertical-align: top !important;    /* 强制置顶对齐 */
     
-    pre {
+    pre.lineno {
       margin: 0 !important;
       padding: 0 !important;
-      font-size: 0.85rem !important; /* 稍微缩小行号字体提升精致感 */
-      color: var(--blockquote-border-color) !important;
+      border: none !important;
+      text-align: right !important;
+      /* 确保字体大小一致，防止行高被撑开 */
+      font-size: 0.85rem !important; 
     }
   }
 
-  /* 针对右侧代码区域 (code) */
-  td.code {
-    padding-top: 0.8rem !important; /* 统一上下内边距 */
-    padding-bottom: 0.8rem !important;
+  /* 3. 针对右侧代码区域 (code) */
+  td.rouge-code {
+    padding: 0.8rem 1rem !important; /* 统一垂直间距 */
     vertical-align: top !important;
 
     pre {
       margin: 0 !important;
-      padding-left: 1rem !important; /* 增加行号与文本间的间距 */
-      white-space: pre-wrap !important; /* 维持自动换行特性 */
+      padding: 0 !important;
+      white-space: pre-wrap !important; /* 保持你的自动换行需求 */
       word-break: break-all !important;
     }
   }
