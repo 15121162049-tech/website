@@ -95,3 +95,22 @@ html body .post-content .language-plaintext.highlighter-rouge table.rouge-table 
   margin: 0 !important;
   padding: 0 !important;
 }
+
+/* --- 自定义 prompt-info 提示块颜色 --- */
+.prompt-info {
+  /* 1. 调整背景颜色 (建议使用低饱和度的浅色) */
+  background-color: rgba(0, 123, 255, 0.08) !important; 
+
+  /* 2. 调整左侧边框颜色 */
+  border-left: 5px solid #007bff !important; 
+
+  /* 3. 如果有图标，调整图标颜色 */
+  &::before {
+    color: #007bff !important;
+  }
+}
+
+/* 如果你使用了可折叠功能，还需要调整标题颜色 */
+.prompt-info > p:first-child strong {
+  color: #0056b3 !important;
+}
