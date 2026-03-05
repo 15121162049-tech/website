@@ -57,3 +57,41 @@ main #post blockquote.prompt-note {
 
   p { margin: 0 !important; }
 }
+/* --- 彻底消除代码块首尾空白 --- */
+
+/* 1. 移除 pre 标签的默认外边距和内边距 */
+.post-content .highlighter-rouge pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.6 !important; /* 统一行高，防止视觉上的间隙 */
+}
+
+/* 2. 针对 plaintext 优化容器间距 */
+html body .post-content .language-plaintext.highlighter-rouge table.rouge-table {
+  display: block !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-collapse: collapse !important; /* 消除表格单元格间隙 */
+
+  td.rouge-code {
+    display: block !important;
+    width: 100% !important;
+    /* 这里的 padding 控制了代码块整体的上下内边距，建议调小 */
+    padding: 0.2rem 1rem !important; 
+    
+    /* 关键：消除 pre 内部可能由渲染器插入的换行符高度 */
+    pre {
+      display: inline-block !important; 
+      width: 100% !important;
+      vertical-align: top !important;
+    }
+  }
+}
+
+/* 3. 解决表格行（tr）和体（tbody）带来的额外高度 */
+.post-content .language-plaintext.highlighter-rouge .rouge-table tbody,
+.post-content .language-plaintext.highlighter-rouge .rouge-table tr {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
