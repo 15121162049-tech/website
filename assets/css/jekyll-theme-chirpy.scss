@@ -72,3 +72,21 @@ table td, table th {
   word-break: break-word;        /* 针对长英文单词强制换行 */
   min-width: 100px;              /* 给列一个最小宽度 */
 }
+
+/* 修改表格边框粗细 */
+table {
+  border: 2px solid var(--main-border-color) !important; /* 外边框粗细 */
+  border-collapse: collapse !important;
+}
+
+table th, table td {
+  border: 1px solid var(--main-border-color) !important; /* 内部单元格边线粗细 */
+  padding: 8px 12px;
+}
+
+/* 修改表格边框粗细 */
+table {
+  background-color: var(--card-bg) !important; /* 使用主题内置变量，自动适配深浅模式 */
+  border-radius: 8px; /* 给表格加一点圆角，看起来更现代 */
+  overflow: hidden;   /* 确保圆角生效 */
+}
