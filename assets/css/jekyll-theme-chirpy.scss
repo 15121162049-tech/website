@@ -54,39 +54,52 @@ main #post blockquote.prompt-note {
   p { margin: 0 !important; }
 }
 
-/* --- 3. 强制显示表格边框  --- */
+/* ---   3. 表格整体优化样式修改        --- */
 
+/* --- 表格整体样式优化 --- */
 table {
-  border-collapse: collapse !important;
-  border: 1px solid var(--main-border-color) !important;
+  /* 1. 核心修正：必须使用 separate 才能让圆角生效 */
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  
+  /* 2. 背景与圆角 */
+  background-color: var(--card-bg) !important;
+  border-radius: 10px !important; /* 调大一点圆角更美观 */
+  overflow: hidden;
+  
+  /* 3. 外边框 */
+  border: 2px solid var(--main-border-color) !important;
+  margin: 1rem 0;
+  width: 100%;
 }
 
+/* --- 单元格样式优化 --- */
 th, td {
-  border: 1px solid var(--main-border-color) !important;
-  padding: 8px 12px;
+  /* 4. 内部边线：只设置右边和底边，避免粗细不均 */
+  border-right: 1px solid var(--main-border-color) !important;
+  border-bottom: 1px solid var(--main-border-color) !important;
+  padding: 10px 15px;
+  
+  /* 5. 文字换行逻辑 */
+  white-space: normal !important;
+  word-break: break-word;
+  min-width: 80px;
 }
 
-/* 强制表格单元格内的文字换行 */
-table td, table th {
-  white-space: normal !important; /* 覆盖可能的 nowrap 设定 */
-  word-break: break-word;        /* 针对长英文单词强制换行 */
-  min-width: 100px;              /* 给列一个最小宽度 */
+/* --- 细节修整 --- */
+
+/* 去除最后一列多余的右边框 */
+th:last-child, td:last-child {
+  border-right: none !important;
 }
 
-/* 修改表格边框粗细 */
-table {
-  border: 2px solid var(--main-border-color) !important; /* 外边框粗细 */
-  border-collapse: collapse !important;
+/* 去除最后一行多余的底边框 */
+tr:last-child td {
+  border-bottom: none !important;
 }
 
-table th, table td {
-  border: 1px solid var(--main-border-color) !important; /* 内部单元格边线粗细 */
-  padding: 8px 12px;
-}
-
-/* 修改表格边框粗细 */
-table {
-  background-color: var(--card-bg) !important; /* 使用主题内置变量，自动适配深浅模式 */
-  border-radius: 8px; /* 给表格加一点圆角，看起来更现代 */
-  overflow: hidden;   /* 确保圆角生效 */
+/* 表头加深背景（可选，增加层级感） */
+thead th {
+  background-color: rgba(var(--main-border-color-rgb), 0.1);
+  font-weight: bold;
 }
