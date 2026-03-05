@@ -9,7 +9,8 @@
 ';
 
 /* append your custom style below */
-// 上方是主题原有代码，别动
+/* 上方是主题原有代码，别动*/
+
 /* --- 修复：自动换行不产生新行号 --- */
 
 /* 1. 强制恢复表格布局，这是对齐行号的关键 */
@@ -72,16 +73,4 @@ main #post blockquote.prompt-note {
     top: 1.1rem !important;
     color: #adb5bd !important;
   }
-
-// 直接在最后粘贴你的自定义样式
-
-/* ========== 你的自定义排版美化 ========== */
-.content {
-  text-align: justify !important;
-  line-height: 1.75;
-}
-.content pre, .content pre code {
-  white-space: pre-wrap !important;
-  word-break: break-word !important;
-}
 
