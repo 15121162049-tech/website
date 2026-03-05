@@ -1,6 +1,5 @@
 ---
 ---
-
 /* prettier-ignore */
 @use 'main{%- if jekyll.environment == 'production' -%}.bundle{%- endif -%}' as *;
 
@@ -142,53 +141,3 @@ div.language-plaintext .highlight {
   border: 1px solid var(--main-border-color) !important; /* 给灰色块加个细边框增加精致感 */
 }
 
-/* 精准锁定 plaintext 渲染出的 Rouge 表格单元格 */
-div.language-plaintext.highlighter-rouge table.rouge-table td {
-  padding: 0 !important;
-}
-
-/* 针对内部 pre 标签可能自带的默认间距进行清空 */
-div.language-plaintext.highlighter-rouge pre {
-  margin: 0 !important;
-  padding: 4px 0 !important; /* 建议保留极小的 4px 视觉留白，否则文字会顶死边框 */
-}
-
-/* 1. 消除代码块内部表格单元格的所有内边距 */
-div.language-plaintext.highlighter-rouge table.rouge-table td {
-  padding: 0 !important;
-}
-
-/* 2. 消除代码内容容器的内外边距 */
-div.language-plaintext.highlighter-rouge .highlight pre {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-/* 3. 压缩代码块整体的上下外边距 (Margin) */
-div.language-plaintext.highlighter-rouge {
-  margin-top: 0px !important;
-  margin-bottom: 0px !important;
-}
-
-/* --- 仅针对 Plaintext 代码块：去背景与透明化 --- */
-
-/* 1. 移除代码块容器和内部表格的背景 */
-div.language-plaintext.highlighter-rouge,
-div.language-plaintext.highlighter-rouge .highlight,
-div.language-plaintext.highlighter-rouge table.rouge-table,
-div.language-plaintext.highlighter-rouge table.rouge-table td {
-  background: transparent !important; /* 彻底透明化 */
-  background-color: transparent !important;
-  border: none !important; /* 移除可能存在的边框线 */
-  box-shadow: none !important;
-}
-
-/* 2. 移除 Plaintext 内部单元格的 Padding（解决你之前看到的橙色区域） */
-div.language-plaintext.highlighter-rouge table.rouge-table td {
-  padding: 0 !important;
-}
-
-/* 3. 确保文字颜色在无背景下依然可见 */
-div.language-plaintext.highlighter-rouge code {
-  color: var(--text-color) !important; 
-  background: none !important;
-}
