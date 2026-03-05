@@ -5,34 +5,41 @@
 
 /* append your custom style below */
 
-/* 1. 强制表格容器不产生横向滚动 */
-.post-content {
-  overflow-x: visible !important; /* 允许溢出内容可见而非产生滚动条 */
-}
-
-/* 2. 深度锁定普通表格：强制固定布局 */
+/* * [普通表格换行强化方案]
+ * 目标：实现内外边框、背景色，并强制文字在单元格内折行，消除横向滚动条
+ */
 .post-content table:not(.rouge-table):not([class*='prompt-']) {
   display: table !important;
-  width: 100% !important;
-  table-layout: fixed !important; /* 核心：强制所有列宽加起来等于100%，不准撑开 */
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
+  width: 100% !important; /* 必须：占用容器全部宽度 */
+  table-layout: fixed !important; /* 核心：强制所有列宽加起来等于100%，不准外扩 */
   border-collapse: separate !important;
   border-spacing: 0 !important;
   border: 1px solid var(--main-border-color) !important;
   border-radius: 8px !important;
   background-color: var(--card-bg) !important;
+  overflow: hidden !important;
 
-  /* 单元格层级的强制断行 */
   th, td {
-    white-space: normal !important; /* 覆盖可能的 nowrap 设置 */
-    word-break: break-all !important; /* 强制在字符间断行，防止长工具名撑开列宽 */
     padding: 10px 15px !important;
     border-right: 1px solid var(--main-border-color) !important;
     border-bottom: 1px solid var(--main-border-color) !important;
+    
+    /* --- 强制换行逻辑组合 --- */
+    white-space: normal !important;      /* 允许正常换行，覆盖可能的 nowrap */
+    word-break: break-all !important;    /* 强制在任意字符间断行，防止长文本撑开列宽 */
+    overflow-wrap: break-word !important; /* 现代浏览器兼容断行 */
   }
 
-  /* 移除边缘重复线 */
+  /* 移除边缘重复线条 */
   th:last-child, td:last-child { border-right: none !important; }
   tr:last-child td { border-bottom: none !important; }
+}
+
+/* * 保持 Info 和 Plaintext 块的原有自动换行
+ * 确保它们不会被上面的表格样式误伤
+ */
+.post-content .highlight pre, 
+.post-content [class*='prompt-'] {
+  white-space: pre-wrap !important; 
+  word-break: break-all !important;
 }
