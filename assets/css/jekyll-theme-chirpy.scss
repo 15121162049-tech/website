@@ -1,0 +1,170 @@
+---
+---
+
+/* prettier-ignore */
+@use 'main{%- if jekyll.environment == 'production' -%}.bundle{%- endif -%}' as *;
+
+/* append your custom style below */
+
+/* --- 1. 强力隐藏 Plaintext 行号并强制铺满换行 --- */
+/* 增加 html 和 body 前缀以极大提升 CSS 权重 */
+html body .post-content .language-plaintext.highlighter-rouge table.rouge-table {
+  display: block !important; /* 破坏表格结构以支持隐藏列 */
+  width: 100% !important;
+
+  /* 使用嵌套选择器精准定位 */
+  &, tbody, tr, td {
+    display: block !important; 
+    width: 100% !important;
+  }
+
+  /* 让代码区域横向撑满 */
+  td.rouge-code {
+    padding: 0.8rem 1rem !important;
+
+    pre {
+      white-space: pre-wrap !important; /* 核心：开启自动换行 */
+      word-break: break-all !important;
+      margin: 0 !important;
+      overflow-x: visible !important; /* 防止出现多余滚动条 */
+    }
+  }
+}
+
+/* --- 2. 提示框样式（已修正嵌套逻辑） --- */
+
+main #post blockquote.prompt-note {
+  background-color: #f6f6f6 !important;
+  border-left: 0.25rem solid #adb5bd !important;
+  padding: 1rem 1rem 1rem 3rem !important;
+  position: relative !important;
+  font-style: normal !important;
+
+  /* 确保 & 在大括号内，避免顶级选择器错误 */
+  &::before {
+    content: "\f05a" !important;
+    font-family: "Font Awesome 5 Free" !important;
+    font-weight: 900 !important;
+    position: absolute !important;
+    left: 1rem !important;
+    top: 1.1rem !important;
+    color: #adb5bd !important;
+  }
+
+  p { margin: 0 !important; }
+}
+
+/* ---   3. 表格整体优化样式修改        --- */
+/* --- 1. 普通表格 (仅针对没有任何特定类的表格进行美化) --- */
+/* 使用 :not 选择器排除掉带有 .prompt-info 或在 .prompt-info 容器内的表格 */
+table:not([class*='prompt-']):not(.plaintext) {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border: 2px solid var(--main-border-color) !important;
+  border-radius: 12px !important;
+  background-color: var(--card-bg) !important;
+  overflow: hidden;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+/* 为普通表格的单元格设置边框和换行 */
+table:not([class*='prompt-']):not(.plaintext) th,
+table:not([class*='prompt-']):not(.plaintext) td {
+  border-right: 1px solid var(--main-border-color) !important;
+  border-bottom: 1px solid var(--main-border-color) !important;
+  padding: 10px 15px;
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+/* 清除普通表格最后一行和最后一列的多余边线 */
+table:not([class*='prompt-']):not(.plaintext) tr:last-child td { border-bottom: none !important; }
+table:not([class*='prompt-']):not(.plaintext) td:last-child, 
+table:not([class*='prompt-']):not(.plaintext) th:last-child { border-right: none !important; }
+
+
+/* --- 2. Info 提示块 (保持 Chirpy 默认) --- */
+/* Chirpy 的 .prompt-info 默认已经有左侧图标、特定背景色和左边框。
+   我们不需要在 CSS 里写太多，只要确保上面的“普通表格”样式不覆盖它即可。
+*/
+.prompt-info {
+  /* 这里不需要写新样式，它会自动沿用主题定义 */
+  margin: 1.5rem 0 !important;
+}
+
+
+/* --- 3. Plaintext/代码块 (保持 Chirpy 默认) --- */
+/* 针对 Markdown 中的 ```plaintext 代码块。
+   Chirpy 默认会给它深色背景、等宽字体和内部间距。
+*/
+.language-plaintext {
+  /* 保持默认的背景色、圆角和字体样式 */
+  border: none !important;
+}
+
+/* --- 仅针对 Plaintext 代码块的深度压缩优化 --- */
+
+/* 1. 压缩代码块整体的上下外边距 */
+div.language-plaintext.highlighter-rouge {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* 3. 压缩左侧行号列 (gutter) 的宽度 */
+div.language-plaintext td.gutter {
+  padding-left: 0px !important;   /* 缩小行号左侧间距 */
+  text-align: center !important;
+}
+
+/* 4. 压缩行号本身的字体和间距 */
+div.language-plaintext td.gutter pre {
+  font-size: 0.75rem !important;
+  line-height: 1.5 !important;
+}
+
+/* 5. 压缩代码内容区域 (code) 的上下内边距 */
+div.language-plaintext td.code {
+  padding-top: 4px !important;    /* 压缩内容顶部间距 */
+  padding-bottom: 4px !important; /* 压缩内容底部间距 */
+}
+
+/* 6. 强制代码文字换行，防止长文本横向撑开影响视觉 */
+div.language-plaintext td.code pre {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  line-height: 1.5 !important;
+}
+
+/* 7. 移除代码背景块的默认额外填充 */
+div.language-plaintext .highlight {
+  padding: 0 !important;
+  border: 1px solid var(--main-border-color) !important; /* 给灰色块加个细边框增加精致感 */
+}
+
+/* 精准锁定 plaintext 渲染出的 Rouge 表格单元格 */
+div.language-plaintext.highlighter-rouge table.rouge-table td {
+  padding: 0 !important;
+}
+
+/* 针对内部 pre 标签可能自带的默认间距进行清空 */
+div.language-plaintext.highlighter-rouge pre {
+  margin: 0 !important;
+  padding: 4px 0 !important; /* 建议保留极小的 4px 视觉留白，否则文字会顶死边框 */
+}
+
+/* 1. 消除代码块内部表格单元格的所有内边距 */
+div.language-plaintext.highlighter-rouge table.rouge-table td {
+  padding: 0 !important;
+}
+
+/* 2. 消除代码内容容器的内外边距 */
+div.language-plaintext.highlighter-rouge .highlight pre {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* 3. 压缩代码块整体的上下外边距 (Margin) */
+div.language-plaintext.highlighter-rouge {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
