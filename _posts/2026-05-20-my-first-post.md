@@ -14,11 +14,20 @@ tags: [GitHub, Chirpy]
 * 无序列表
 - 无序列表
 + 无序列表
-  + 嵌套缩进
-  - 嵌套缩进
-> 多行引用
-特殊引进 {: .class-name }
+  + **嵌套缩进**
+  - *嵌套缩进*
 
+> 多行引用
+特殊引进
+ {: .class-name }
+
+~这里是删除的内容~
+
+[点击这里]([https://example.com](https://15121162049-tech.github.io/website/posts/my-first-post/) "刷新当前页面")
+
+|标题|标题|标题|
+|:---|:---:|---:|
+|左对齐|居中对齐|右对齐|
 
 > 这里写你的正文内容...
 {: .prompt-info}
@@ -39,9 +48,3 @@ tags: [GitHub, Chirpy]
 这里写你的正文内容...
 {: .prompt-info .collapse .active }
 
-|标题|标题|标题|
-|:---|:---:|---:|
-|左对齐|居中对齐|右对齐|
-
-**加粗字体**
-*斜体字体*
