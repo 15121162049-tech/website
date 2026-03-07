@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇3D</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #000000;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(11, 12, 21, 0.9);
+            pointer-events: auto;
+        }
+
+        .screen-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #00FF9D;
+            text-shadow: 0 0 20px #00FF9D, 0 0 40px #00FF9D, 0 0 60px #00FF9D;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #00FF9D 0%, #00CC7A 100%);
+            border: none;
+            padding: 18px 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0B0C15;
+            cursor: pointer;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px #00FF9D, 0 0 40px rgba(0, 255, 157, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #00FF9D, 0 0 60px rgba(0, 255, 157, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui-layer">
+        <div id="start-screen">
+            <div class="screen-title">贪吃蛇3D</div>
+            <button class="start-btn" onclick="startGame()">开始游戏</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // 游戏配置
+        const GameConfig = {
+            INITIAL_SNAKE_LENGTH: 10,
+            SNAKE_SPEED: 30,
+            SPEED_INCREMENT: 0.5,
+            LANE_WIDTH: 2.5,
+            MAX_LANES: 4,
+            SPAWN_Z: -100,
+            DESPAWN_Z: 30,
+            APPLE_SCORE: 100,
+            INVULNERABILITY_TIME: 500,
+            GRID_SIZE: 200,
+            SEGMENT_SPACING: 0.8,
+            TRACK_LENGTH: 1000,
+            TRACK_SEGMENTS: 20,
+            LATERAL_SPEED: 15
+        };
+
+        // 游戏状态
+        const GameState = {
+            isPlaying: false,
+            isPaused: false,
+            score: 0,
+            distance: 0,
+            speed: GameConfig.SNAKE_SPEED,
+            snakeLength: GameConfig.INITIAL_SNAKE_LENGTH,
+            currentLane: 1,
+            targetLane: 1,
+            isInvulnerable: false,
+            highScore: parseInt(localStorage.getItem('snakeRushHighScore')) || 0
+        };
+
+        // Three.js 变量
+        let scene, camera, renderer;
+        let snakeHead, snakeBody = [];
+        let apples = [], mines = [];
+        let trackParts = [];
+        let railings = [];
+        let trees = [];
+        let clock = new THREE.Clock();
+
+        // 路径历史
+        let pathHistory = [];
+        const MAX_PATH_HISTORY = 200;
+
+        // 粒子对象池
+        let particlePool = [];
+        const MAX_POOL_SIZE = 200;
+
+        // 输入状态
+        let keys = { left: false, right: false };
+
+        // 上次生成障碍物的时间
+        let lastSpawnTime = 0;
+        const SPAWN_INTERVAL = 0.3;
+
+        // 上次HUD更新的值
+        let lastHUDValues = {
+            score: -1,
+            snakeLength: -1,
+            distance: -1
+        };
+
+        function init() {
+            // 场景
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+            scene.fog = new THREE.Fog(0x000000, 30, 100);
+
+            // 相机
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 8, 12);
+            camera.lookAt(0, 0, -10);
+
+            // 渲染器
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gameCanvas'), antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            // 灯光
+            const ambientLight = new THREE.AmbientLight(0x404080, 0.5);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 20, 10);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            scene.add(directionalLight);
+
+            const pointLight = new THREE.PointLight(0x00FF9D, 1, 50);
+            pointLight.position.set(0, 5, 0);
+            scene.add(pointLight);
+
+            // 创建赛道
+            createTrack();
+
+            // 创建路边的树
+            createTrees();
+
+            // 创建蛇
+            createSnake();
+
+            // 事件监听
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('keydown', onKeyDown);
+            window.addEventListener('keyup', onKeyUp);
+
+            // 触摸事件
+            window.addEventListener('touchstart', (e) => {
+                if (!GameState.isPlaying || GameState.isPaused) return;
+                const touchX = e.touches[0].clientX;
+                const screenWidth = window.innerWidth;
+
+                if (touchX < screenWidth / 3) {
+                    moveLeft();
+                } else if (touchX > screenWidth * 2 / 3) {
+                    moveRight();
+                }
+            });
+
+            // 开始动画循环
+            animate();
+        }
+
+        function createTrack() {
+            const trackWidth = 20;
+            const trackDepth = GameConfig.TRACK_LENGTH;
+            const segmentDepth = trackDepth / 2;
+            const laneWidth = 2.5;
+
+            // 4条车道的不同颜色
+            const laneColors = [
+                0xB8D4E8,  // 车道1 - 浅蓝色
+                0xC2E4C8,  // 车道2 - 浅绿色
+                0xE8D8C8,  // 车道3 - 浅橙色
+                0xD8C8E0   // 车道4 - 浅紫色
+            ];
+
+            // 创建两段赛道实现无缝循环
+            for (let seg = 0; seg < 2; seg++) {
+                // 创建4条不同颜色的车道
+                for (let lane = 0; lane < 4; lane++) {
+                    const laneX = -3.75 + lane * laneWidth;
+                    const roadGeometry = new THREE.PlaneGeometry(laneWidth, segmentDepth);
+                    const roadMaterial = new THREE.MeshStandardMaterial({
+                        color: laneColors[lane],
+                        roughness: 0.85,
+                        metalness: 0.1
+                    });
+                    const road = new THREE.Mesh(roadGeometry, roadMaterial);
+                    road.rotation.x = -Math.PI / 2;
+                    road.position.set(laneX, -0.5, -seg * segmentDepth - segmentDepth / 2);
+                    road.receiveShadow = true;
+                    scene.add(road);
+                    trackParts.push(road);
+                }
+            }
+
+            // 赛道边界发光线条
+            const lineGeo = new THREE.BufferGeometry();
+            const linePositions = [];
+            linePositions.push(-10, 0, 100, -10, 0, -100);
+            linePositions.push(10, 0, 100, 10, 0, -100);
+            lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            const lineMat = new THREE.LineBasicMaterial({ color: 0x00FF9D, linewidth: 2 });
+            const lines = new THREE.LineSegments(lineGeo, lineMat);
+            lines.position.y = 0.1;
+            scene.add(lines);
+
+            // 赛道护栏
+            createRailing(-9);
+            createRailing(9);
+        }
+
+        function createRailing(xPos) {
+            const segmentLength = GameConfig.TRACK_LENGTH / GameConfig.TRACK_SEGMENTS;
+
+            for (let j = 0; j < GameConfig.TRACK_SEGMENTS; j++) {
+                const railingGroup = new THREE.Group();
+
+                for (let i = 0; i < 20; i++) {
+                    const postGeometry = new THREE.BoxGeometry(0.2, 1.5, 0.2);
+                    const postMaterial = new THREE.MeshStandardMaterial({
+                        color: 0x3E4C84,
+                        emissive: 0x00FF9D,
+                        emissiveIntensity: 0.2
+                    });
+                    const post = new THREE.Mesh(postGeometry, postMaterial);
+                    post.position.set(xPos, 0.25, -j * segmentLength - i * 10);
+                    post.castShadow = true;
+                    railingGroup.add(post);
+                }
+
+                scene.add(railingGroup);
+                railings.push(railingGroup);
+            }
+        }
+
+        function createLowPolyTree(x, z, style) {
+            const tree = new THREE.Group();
+            style = style || Math.floor(Math.random() * 3);
+            const heightScale = 0.7 + Math.random() * 0.6;
+
+            if (style === 0) {
+                const trunkGeometry = new THREE.BoxGeometry(0.4, 1.2, 0.4);
+                const trunkMaterial = new THREE.MeshStandardMaterial({ color: 0xA07850, roughness: 0.9, metalness: 0.1, flatShading: true });
+                const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+                trunk.position.y = 0.6 * heightScale;
+                tree.add(trunk);
+
+                const crownColors = [0x6BC17A, 0x7ACA8A, 0x8AD09A];
+                const crownSizes = [1.5, 1.2, 0.9];
+                const crownHeights = [1.8, 2.6, 3.3];
+                for (let i = 0; i < 3; i++) {
+                    const crownGeometry = new THREE.IcosahedronGeometry(crownSizes[i] * heightScale, 0);
+                    const crownMaterial = new THREE.MeshStandardMaterial({ color: crownColors[i], roughness: 0.8, metalness: 0.1, flatShading: true });
+                    const crown = new THREE.Mesh(crownGeometry, crownMaterial);
+                    crown.position.y = crownHeights[i] * heightScale;
+                    tree.add(crown);
+                }
+            } else if (style === 1) {
+                const trunkGeometry = new THREE.BoxGeometry(0.35, 1.0, 0.35);
+                const trunkMaterial = new THREE.MeshStandardMaterial({ color: 0x8B7355, roughness: 0.9, metalness: 0.1, flatShading: true });
+                const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+                trunk.position.y = 0.5 * heightScale;
+                tree.add(trunk);
+
+                const crownColors = [0x8090E8, 0x9585D0, 0xAB90E0];
+                const crownSizes = [1.3, 1.0, 0.7];
+                const crownHeights = [1.6, 2.3, 2.9];
+                for (let i = 0; i < 3; i++) {
+                    const crownGeometry = new THREE.OctahedronGeometry(crownSizes[i] * heightScale, 0);
+                    const crownMaterial = new THREE.MeshStandardMaterial({ color: crownColors[i], roughness: 0.8, metalness: 0.1, flatShading: true });
+                    const crown = new THREE.Mesh(crownGeometry, crownMaterial);
+                    crown.position.y = crownHeights[i] * heightScale;
+                    tree.add(crown);
+                }
+            } else {
+                const trunkGeometry = new THREE.BoxGeometry(0.3, 0.8, 0.3);
+                const trunkMaterial = new THREE.MeshStandardMaterial({ color: 0x8B7765, roughness: 0.9, metalness: 0.1, flatShading: true });
+                const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+                trunk.position.y = 0.4 * heightScale;
+                tree.add(trunk);
+
+                const crownColors = [0xFFB050, 0xFFC070, 0xFFCF80];
+                const crownSizes = [1.1, 0.8, 0.5];
+                const crownHeights = [1.4, 2.0, 2.5];
+                for (let i = 0; i < 3; i++) {
+                    const crownGeometry = new THREE.DodecahedronGeometry(crownSizes[i] * heightScale, 0);
+                    const crownMaterial = new THREE.MeshStandardMaterial({ color: crownColors[i], roughness: 0.8, metalness: 0.1, flatShading: true });
+                    const crown = new THREE.Mesh(crownGeometry, crownMaterial);
+                    crown.position.y = crownHeights[i] * heightScale;
+                    tree.add(crown);
+                }
+            }
+
+            tree.position.set(x, 0, z);
+            return tree;
+        }
+
+        function createTrees() {
+            const segmentLength = GameConfig.TRACK_LENGTH / GameConfig.TRACK_SEGMENTS;
+            const treeSpacing = 15;
+
+            for (let side = -1; side <= 1; side += 2) {
+                const xPos = side * 10.5;
+
+                for (let i = 0; i < GameConfig.TRACK_LENGTH / treeSpacing + 10; i++) {
+                    const zPos = -i * treeSpacing;
+                    const style = Math.floor(Math.random() * 3);
+                    const tree = createLowPolyTree(xPos + side * 1, zPos, style);
+                    tree.position.x += (Math.random() - 0.5) * 2;
+                    tree.rotation.y = Math.random() * Math.PI * 2;
+                    scene.add(tree);
+                    trees.push(tree);
+                }
+            }
+        }
+
+        function createSnake() {
+            // 创建卡车头部形状的蛇头
+            snakeHead = new THREE.Group();
+
+            // 车身材质
+            const bodyMaterial = new THREE.MeshStandardMaterial({
+                color: 0x00CC7A,
+                emissive: 0x00FF9D,
+                emissiveIntensity: 0.5,
+                roughness: 0.3,
+                metalness: 0.7
+            });
+
+            // 驾驶室（卡车头部）
+            const cabinGeometry = new THREE.BoxGeometry(1.1, 0.9, 1.3);
+            const cabin = new THREE.Mesh(cabinGeometry, bodyMaterial);
+            cabin.position.set(0, 0.6, 0.2);
+            cabin.castShadow = true;
+            snakeHead.add(cabin);
+
+            // 车轮
+            const wheelGeometry = new THREE.CylinderGeometry(0.22, 0.22, 0.2, 16);
+            const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.9, metalness: 0.1 });
+
+            const wheelPositions = [
+                [-0.55, 0.12, 0.55],
+                [0.55, 0.12, 0.55],
+                [-0.55, 0.12, -0.25],
+                [0.55, 0.12, -0.25]
+            ];
+
+            wheelPositions.forEach(pos => {
+                const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+                wheel.rotation.z = Math.PI / 2;
+                wheel.position.set(pos[0], pos[1], pos[2]);
+                wheel.castShadow = true;
+                snakeHead.add(wheel);
+            });
+
+            snakeHead.position.set(0, 0.5, 0);
+            scene.add(snakeHead);
+
+            // 蛇身方块
+            for (let i = 0; i < GameConfig.INITIAL_SNAKE_LENGTH - 1; i++) {
+                createBodySegment(i);
+            }
+        }
+
+        function createBodySegment(index) {
+            const size = 1 - (index * 0.03);
+            const geometry = new THREE.BoxGeometry(size, size, size);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x00FF9D,
+                emissive: 0x00FF9D,
+                emissiveIntensity: 0.3 - (index * 0.02),
+                roughness: 0.4,
+                metalness: 0.6
+            });
+
+            const segment = new THREE.Mesh(geometry, material);
+            segment.position.set(0, 0.5, (index + 1) * GameConfig.SEGMENT_SPACING);
+            segment.castShadow = true;
+
+            scene.add(segment);
+            snakeBody.push(segment);
+        }
+
+        function createApple() {
+            const geometry = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xFF2A6D,
+                emissive: 0xFF2A6D,
+                emissiveIntensity: 0.8,
+                roughness: 0.2,
+                metalness: 0.8
+            });
+
+            const apple = new THREE.Mesh(geometry, material);
+            const lane = Math.floor(Math.random() * 4);
+            apple.position.set(lane * 2.5 - 3.75, 0.8, GameConfig.SPAWN_Z);
+            apple.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+            apple.userData = { type: 'apple', rotationSpeed: 0.02 + Math.random() * 0.02 };
+
+            scene.add(apple);
+            apples.push(apple);
+        }
+
+        function createMine() {
+            const group = new THREE.Group();
+
+            // 地雷主体
+            const geometry = new THREE.IcosahedronGeometry(0.5, 0);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x222222,
+                roughness: 0.8,
+                metalness: 0.3,
+                emissive: 0xFF0000,
+                emissiveIntensity: 0.3
+            });
+            const mineBody = new THREE.Mesh(geometry, material);
+            mineBody.castShadow = true;
+            group.add(mineBody);
+
+            // 引线
+            const fuseGeometry = new THREE.CylinderGeometry(0.03, 0.03, 0.5, 8);
+            const fuseMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+            const fuse = new THREE.Mesh(fuseGeometry, fuseMaterial);
+            fuse.position.set(0, 0.8, 0);
+            fuse.rotation.z = 0.3;
+            group.add(fuse);
+
+            // 火花
+            const sparkGeometry = new THREE.SphereGeometry(0.08, 8, 8);
+            const sparkMaterial = new THREE.MeshBasicMaterial({ color: 0xFF4500 });
+            const spark = new THREE.Mesh(sparkGeometry, sparkMaterial);
+            spark.position.set(0.15, 0.75, 0);
+            spark.userData = { isSpark: true };
+            group.add(spark);
+
+            // 火花点光源
+            const sparkLight = new THREE.PointLight(0xFF4500, 1, 3);
+            sparkLight.position.copy(spark.position);
+            sparkLight.userData = { isSparkLight: true };
+            group.add(sparkLight);
+
+            const lane = Math.floor(Math.random() * 4);
+            group.position.set(lane * 2.5 - 3.75, 0.5, GameConfig.SPAWN_Z);
+            group.userData = {
+                type: 'mine',
+                sparkOffset: Math.random() * Math.PI * 2
+            };
+
+            scene.add(group);
+            mines.push(group);
+        }
+
+        function createAppleWithLane(lane) {
+            const geometry = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xFF2A6D,
+                emissive: 0xFF2A6D,
+                emissiveIntensity: 0.8,
+                roughness: 0.2,
+                metalness: 0.8
+            });
+
+            const apple = new THREE.Mesh(geometry, material);
+            apple.position.set(lane * 2.5 - 3.75, 0.8, GameConfig.SPAWN_Z);
+            apple.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+            apple.userData = { type: 'apple', rotationSpeed: 0.02 + Math.random() * 0.02 };
+
+            scene.add(apple);
+            apples.push(apple);
+        }
+
+        function createMineWithLane(lane) {
+            const group = new THREE.Group();
+
+            // 地雷主体
+            const geometry = new THREE.IcosahedronGeometry(0.5, 0);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x222222,
+                roughness: 0.8,
+                metalness: 0.3,
+                emissive: 0xFF0000,
+                emissiveIntensity: 0.3
+            });
+            const mineBody = new THREE.Mesh(geometry, material);
+            mineBody.castShadow = true;
+            group.add(mineBody);
+
+            // 引线
+            const fuseGeometry = new THREE.CylinderGeometry(0.03, 0.03, 0.5, 8);
+            const fuseMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+            const fuse = new THREE.Mesh(fuseGeometry, fuseMaterial);
+            fuse.position.set(0, 0.8, 0);
+            fuse.rotation.z = 0.3;
+            group.add(fuse);
+
+            // 火花
+            const sparkGeometry = new THREE.SphereGeometry(0.08, 8, 8);
+            const sparkMaterial = new THREE.MeshBasicMaterial({ color: 0xFF4500 });
+            const spark = new THREE.Mesh(sparkGeometry, sparkMaterial);
+            spark.position.set(0.15, 0.75, 0);
+            spark.userData = { isSpark: true };
+            group.add(spark);
+
+            // 火花点光源
+            const sparkLight = new THREE.PointLight(0xFF4500, 1, 3);
+            sparkLight.position.copy(spark.position);
+            sparkLight.userData = { isSparkLight: true };
+            group.add(sparkLight);
+
+            group.position.set(lane * 2.5 - 3.75, 0.5, GameConfig.SPAWN_Z);
+            group.userData = {
+                type: 'mine',
+                sparkOffset: Math.random() * Math.PI * 2
+            };
+
+            scene.add(group);
+            mines.push(group);
+        }
+
+        function isPositionOccupied(lane, z, threshold = 2) {
+            for (let apple of apples) {
+                const appleLane = Math.round(apple.position.x / GameConfig.LANE_WIDTH);
+                if (appleLane === lane && Math.abs(apple.position.z - z) < threshold) {
+                    return true;
+                }
+            }
+            for (let mine of mines) {
+                const mineLane = Math.round(mine.position.x / GameConfig.LANE_WIDTH);
+                if (mineLane === lane && Math.abs(mine.position.z - z) < threshold) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function spawnObstacles(currentTime) {
+            if (currentTime - lastSpawnTime > SPAWN_INTERVAL) {
+                lastSpawnTime = currentTime;
+
+                const lane = Math.floor(Math.random() * 4);
+                const spawnZ = GameConfig.SPAWN_Z;
+
+                if (!isPositionOccupied(lane, spawnZ, 3)) {
+                    const rand = Math.random();
+                    if (rand < 0.5) {
+                        createAppleWithLane(lane);
+                    } else {
+                        createMineWithLane(lane);
+                    }
+                }
+            }
+        }
+
+        function getParticle() {
+            if (particlePool.length > 0) {
+                return particlePool.pop();
+            }
+            const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+            const material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: 1 });
+            const particle = new THREE.Mesh(geometry, material);
+            particle.userData = {
+                velocity: new THREE.Vector3(),
+                rotationSpeed: new THREE.Vector3(),
+                life: 1
+            };
+            return particle;
+        }
+
+        function returnParticle(particle) {
+            if (particlePool.length < MAX_POOL_SIZE) {
+                scene.remove(particle);
+                particlePool.push(particle);
+            } else {
+                scene.remove(particle);
+            }
+        }
+
+        function createParticles(position, color) {
+            for (let i = 0; i < 20; i++) {
+                const particle = getParticle();
+                particle.position.copy(position);
+                particle.material.color.setHex(color);
+                particle.userData.velocity.set(
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10
+                );
+                particle.userData.rotationSpeed.set(
+                    (Math.random() - 0.5) * 0.1,
+                    (Math.random() - 0.5) * 0.1,
+                    (Math.random() - 0.5) * 0.1
+                );
+                particle.userData.life = 1;
+                scene.add(particle);
+            }
+        }
+
+        function createBlockDestruction(position) {
+            for (let i = 0; i < 10; i++) {
+                const particle = getParticle();
+                particle.position.copy(position);
+                particle.material.color.setHex(0x00FF9D);
+                particle.userData.velocity.set(
+                    (Math.random() - 0.5) * 5,
+                    (Math.random() - 0.5) * 5,
+                    (Math.random() - 0.5) * 5
+                );
+                particle.userData.rotationSpeed.set(
+                    (Math.random() - 0.5) * 0.1,
+                    (Math.random() - 0.5) * 0.1,
+                    (Math.random() - 0.5) * 0.1
+                );
+                particle.userData.life = 1;
+                scene.add(particle);
+            }
+        }
+
+        function moveLeft() {
+            if (GameState.targetLane > 0) {
+                GameState.targetLane--;
+            }
+        }
+
+        function moveRight() {
+            if (GameState.targetLane < GameConfig.MAX_LANES - 1) {
+                GameState.targetLane++;
+            }
+        }
+
+        function onKeyDown(event) {
+            if (!GameState.isPlaying) {
+                if (event.code === 'Space') {
+                    startGame();
+                }
+                return;
+            }
+
+            if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+                moveLeft();
+            } else if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+                moveRight();
+            }
+        }
+
+        function onKeyUp(event) {
+            // 不需要实现
+        }
+
+        function getLaneX(lane) {
+            return (lane - 1.5) * GameConfig.LANE_WIDTH;
+        }
+
+        function updateSnake(delta) {
+            if (!GameState.isPlaying) return;
+
+            const targetX = getLaneX(GameState.targetLane);
+            const diff = targetX - snakeHead.position.x;
+            if (Math.abs(diff) > 0.05) {
+                snakeHead.position.x += diff * GameConfig.LATERAL_SPEED * delta * 0.5;
+                snakeHead.rotation.z = -Math.sign(diff) * 0.1 * (Math.abs(diff) / GameConfig.LANE_WIDTH);
+            } else {
+                snakeHead.position.x = targetX;
+                snakeHead.rotation.z = Math.sin(Date.now() * 0.005) * 0.05;
+            }
+
+            const maxX = getLaneX(GameConfig.MAX_LANES - 1);
+            snakeHead.position.x = Math.max(getLaneX(0), Math.min(maxX, snakeHead.position.x));
+
+            pathHistory.unshift({ x: snakeHead.position.x, y: snakeHead.position.y, z: 0 });
+            if (pathHistory.length > MAX_PATH_HISTORY) {
+                pathHistory.pop();
+            }
+
+            for (let i = 0; i < snakeBody.length; i++) {
+                const pathIndex = Math.floor((i + 1) * GameConfig.SEGMENT_SPACING * 8);
+                if (pathIndex < pathHistory.length) {
+                    const pos = pathHistory[pathIndex];
+                    const segment = snakeBody[i];
+                    segment.position.x += (pos.x - segment.position.x) * 0.3;
+                    segment.position.y += (pos.y - segment.position.y) * 0.3;
+                    segment.position.z = (i + 1) * GameConfig.SEGMENT_SPACING;
+                    segment.rotation.z = Math.sin(Date.now() * 0.005 + i * 0.1) * 0.05;
+                }
+            }
+        }
+
+        function updateTrackAndObstacles(delta) {
+            const moveDistance = GameState.speed * delta;
+
+            GameState.distance += moveDistance;
+            GameState.speed += GameConfig.SPEED_INCREMENT * delta;
+
+            const segmentDepth = GameConfig.TRACK_LENGTH / 2;
+            for (let i = 0; i < trackParts.length; i++) {
+                const part = trackParts[i];
+                part.position.z += moveDistance;
+                if (part.position.z > segmentDepth / 2) {
+                    part.position.z -= GameConfig.TRACK_LENGTH;
+                }
+            }
+
+            for (let r = 0; r < railings.length; r++) {
+                const railing = railings[r];
+                railing.position.z += moveDistance;
+                if (railing.position.z > 20) {
+                    railing.position.z -= GameConfig.TRACK_LENGTH;
+                }
+            }
+
+            for (let t = 0; t < trees.length; t++) {
+                trees[t].position.z += moveDistance;
+                if (trees[t].position.z > 20) {
+                    trees[t].position.z -= GameConfig.TRACK_LENGTH + 100;
+                    trees[t].position.x = (Math.random() > 0.5 ? 1 : -1) * (12 + Math.random() * 2);
+                    trees[t].rotation.y = Math.random() * Math.PI * 2;
+                }
+            }
+
+            for (let i = apples.length - 1; i >= 0; i--) {
+                const apple = apples[i];
+                apple.position.z += moveDistance;
+                apple.rotation.y += apple.userData.rotationSpeed;
+                apple.rotation.x += apple.userData.rotationSpeed * 0.5;
+
+                const distance = snakeHead.position.distanceTo(apple.position);
+                if (distance < 1.5) {
+                    collectApple(apple);
+                    apples.splice(i, 1);
+                    continue;
+                }
+
+                if (apple.position.z > GameConfig.DESPAWN_Z) {
+                    scene.remove(apple);
+                    apples.splice(i, 1);
+                }
+            }
+
+            for (let i = mines.length - 1; i >= 0; i--) {
+                const mine = mines[i];
+                mine.position.z += moveDistance;
+
+                const time = clock.elapsedTime + mine.userData.sparkOffset;
+                mine.children.forEach(child => {
+                    if (child.userData.isSpark) {
+                        child.position.x = 0.15 + Math.sin(time * 15) * 0.05;
+                        child.position.y = 0.75 + Math.cos(time * 20) * 0.03;
+                        child.material.color.setHex(Math.sin(time * 10) > 0 ? 0xFFFF00 : 0xFF4500);
+                    }
+                    if (child.userData.isSparkLight) {
+                        child.position.x = 0.15 + Math.sin(time * 15) * 0.05;
+                        child.position.y = 0.75 + Math.cos(time * 20) * 0.03;
+                        child.intensity = 1 + Math.sin(time * 15) * 0.5;
+                    }
+                });
+
+                const distance = snakeHead.position.distanceTo(mine.position);
+                if (distance < 1.5 && !GameState.isInvulnerable) {
+                    hitMine(mine);
+                    mines.splice(i, 1);
+                    continue;
+                }
+
+                if (mine.position.z > GameConfig.DESPAWN_Z) {
+                    scene.remove(mine);
+                    mines.splice(i, 1);
+                }
+            }
+        }
+
+        function collectApple(apple) {
+            GameState.score += GameConfig.APPLE_SCORE;
+            scene.remove(apple);
+            createParticles(apple.position, 0xFF2A6D);
+        }
+
+        function hitMine(mine) {
+            GameState.snakeLength--;
+            scene.remove(mine);
+            createParticles(mine.position, 0xFF9E00);
+
+            if (snakeBody.length > 0) {
+                const removedSegment = snakeBody.pop();
+                createBlockDestruction(removedSegment.position);
+                scene.remove(removedSegment);
+            }
+
+            GameState.isInvulnerable = true;
+            setTimeout(() => {
+                GameState.isInvulnerable = false;
+            }, GameConfig.INVULNERABILITY_TIME);
+
+            if (GameState.snakeLength <= 0) {
+                gameOver();
+            }
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+
+            GameState.isPlaying = true;
+            GameState.isPaused = false;
+            GameState.score = 0;
+            GameState.distance = 0;
+            GameState.speed = GameConfig.SNAKE_SPEED;
+            GameState.snakeLength = GameConfig.INITIAL_SNAKE_LENGTH;
+            GameState.targetLane = 1;
+            GameState.isInvulnerable = false;
+
+            snakeHead.position.set(0, 0.5, 0);
+            pathHistory = [];
+
+            const segmentDepth = GameConfig.TRACK_LENGTH / 2;
+            for (let seg = 0; seg < 2; seg++) {
+                for (let lane = 0; lane < 4; lane++) {
+                    trackParts[seg * 4 + lane].position.z = -seg * segmentDepth - segmentDepth / 2;
+                }
+            }
+
+            for (let r = 0; r < railings.length; r++) {
+                railings[r].position.z = 0;
+            }
+
+            apples.forEach(a => scene.remove(a));
+            mines.forEach(m => scene.remove(m));
+            apples = [];
+            mines = [];
+
+            snakeBody.forEach(s => scene.remove(s));
+            snakeBody = [];
+            for (let i = 0; i < GameConfig.INITIAL_SNAKE_LENGTH - 1; i++) {
+                createBodySegment(i);
+            }
+
+            lastSpawnTime = 0;
+        }
+
+        function gameOver() {
+            GameState.isPlaying = false;
+            document.getElementById('start-screen').style.display = 'flex';
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const delta = clock.getDelta();
+
+            if (GameState.isPlaying && !GameState.isPaused) {
+                updateSnake(delta);
+                updateTrackAndObstacles(delta);
+                spawnObstacles(clock.elapsedTime);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // 启动游戏
+        init();
+    </script>
+</body>
+</html>
