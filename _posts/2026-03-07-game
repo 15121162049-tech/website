@@ -1,0 +1,4 @@
+---
+---
+## 小游戏
+<iframe src="{{ site.baseurl }}/assets/games/index.html" width="100%" height="500px" frameborder="0"></iframe>
