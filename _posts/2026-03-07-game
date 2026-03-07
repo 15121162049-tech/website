@@ -1,4 +1,8 @@
 ---
+title: 真实设计场景测试AI：评估方法与提示词
+date: 2026-03-07 12:00:00 +0800
+categories: [AI, 设计]
+tags: [AI设计, UX设计, 提示词工程, 设计评估]
 ---
 ## 小游戏
 <iframe src="{{ site.baseurl }}/assets/games/index.html" width="100%" height="500px" frameborder="0"></iframe>
