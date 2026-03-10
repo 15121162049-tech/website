@@ -1,6 +1,6 @@
 ---
 title: 我的第一篇文章
-date: 2024-05-20 12:00:00 +0800
+date: 2026-01-01 12:00:00 +0800
 categories: [教程, 记录]
 tags: [GitHub, Chirpy]
 ---
