@@ -63,20 +63,31 @@ table:not([class*='prompt-']):not(.rouge-table) {
   }
 }
 
-/* --- 视觉优化：整体下移搜索框和侧边栏内容 --- */
+/* --- 强制整体下移顶部栏（含搜索框） --- */
 
-/* 1. 下移搜索框所在区域 */
+/* 1. 针对大屏幕（992px以上）调整顶部容器 */
+@media (min-width: 992px) {
+  #topbar-wrapper {
+    /* 增加顶部外边距 */
+    margin-top: 5rem !important; 
+    /* 移除固定高度限制，允许它向下扩展 */
+    height: auto !important;
+  }
+
+  #topbar {
+    /* 确保内部容器不再强制撑满 100% 高度 */
+    height: auto !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+}
+
+/* 2. 针对搜索框本身增加间距 */
 #search-wrapper {
-  margin-top: 5rem !important; /* 这个值越大，搜索框就越往下移 */
+  margin-top: 0.5rem !important;
 }
 
-/* 2. 让侧边栏的其他内容（如 Recently Updated）也跟着同步下移，保持间距 */
-#sidebar {
-  padding-top: 2rem !important;
-}
-
-/* 3. 如果想让面包屑导航（Home > ...）也往下挪点 */
+/* 3. 同步移动面包屑导航，保持视觉一致 */
 nav[aria-label="breadcrumb"] {
-  margin-top: 1.5rem !important;
+  margin-top: 1rem !important;
 }
-
