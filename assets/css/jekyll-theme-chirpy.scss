@@ -62,3 +62,21 @@ table:not([class*='prompt-']):not(.rouge-table) {
     }
   }
 }
+
+/* --- 视觉优化：整体下移搜索框和侧边栏内容 --- */
+
+/* 1. 下移搜索框所在区域 */
+#search-wrapper {
+  margin-top: 5rem !important; /* 这个值越大，搜索框就越往下移 */
+}
+
+/* 2. 让侧边栏的其他内容（如 Recently Updated）也跟着同步下移，保持间距 */
+#sidebar {
+  padding-top: 2rem !important;
+}
+
+/* 3. 如果想让面包屑导航（Home > ...）也往下挪点 */
+nav[aria-label="breadcrumb"] {
+  margin-top: 1.5rem !important;
+}
+
