@@ -66,11 +66,11 @@ table:not([class*='prompt-']):not(.rouge-table) {
 /* --- 强制顶部栏整体下移（优先级最高） --- */
 #topbar-wrapper {
   position: relative !important; /* 改变定位模式，让它重新跟随文档流 */
-  top: 2rem !important;          /* 直接从顶部向下偏移距离 */
-  margin-bottom: 2rem !important; /* 给下方元素留出空间，防止遮挡 */
+  top: 1rem !important;          /* 直接从顶部向下偏移距离 */
+  margin-bottom: 1rem !important; /* 给下方元素留出空间，防止遮挡 */
 }
 
 /* 确保页面主要内容也跟着下移，防止被顶部遮挡 */
 #main-wrapper {
-  margin-top: 2rem !important;
+  margin-top: 1rem !important;
 }
