@@ -63,20 +63,25 @@ table:not([class*='prompt-']):not(.rouge-table) {
   }
 }
 
-/* --- 强制顶部栏整体下移（优先级最高） --- */
-#topbar-wrapper {
-  position: relative !important; /* 改变定位模式，让它重新跟随文档流 */
-  top: 0.5rem !important;          /* 直接从顶部向下偏移距离 */
-  margin-bottom: 0.8rem !important; /* 给下方元素留出空间，防止遮挡 */
-}
+/* --- 锁定顶部栏高度，防止切换页面时布局跳动 --- */
 
-/* 确保页面主要内容也跟着下移，防止被顶部遮挡 */
-#main-wrapper {
-  margin-top: 1rem !important;
-}
-
-/* --- 在顶部栏下方添加分割线 --- */
 #topbar-wrapper {
-  border-bottom: 1px solid var(--main-border-color) !important;
+  /* 统一首页与内页的顶部空间，不再使用 margin-top 这种会引起位移的属性 */
+  padding-top: 1rem !important;
   padding-bottom: 1rem !important;
+  
+  /* 给顶部栏一个绝对的高度，这能彻底锁死它的位置 */
+  min-height: 80px !important; 
+  height: 80px !important;
+  
+  /* 分割线 */
+  border-bottom: 1px solid var(--main-border-color) !important;
+  
+  /* 关键：防止加载时闪烁 */
+  transition: none !important;
+}
+
+/* 确保内部的 flex 容器也对齐 */
+#topbar {
+  height: 100% !important;
 }
