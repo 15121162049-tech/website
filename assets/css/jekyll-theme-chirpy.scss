@@ -85,3 +85,13 @@ table:not([class*='prompt-']):not(.rouge-table) {
 #topbar {
   height: 100% !important;
 }
+
+/* --- 进一步减淡底部页脚文字 --- */
+footer {
+  /* 增加透明度，数值越小越透明（0.4 - 0.6 是比较合适的范围） */
+  opacity: 0.3 !important;
+  
+  /* 可选：如果你想让文字更纤细一点，可以减小字重 */
+  font-weight: 200 !important;
+}
+
