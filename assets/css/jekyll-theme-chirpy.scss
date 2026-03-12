@@ -74,3 +74,11 @@ table:not([class*='prompt-']):not(.rouge-table) {
 #main-wrapper {
   margin-top: 1rem !important;
 }
+
+/* --- 在顶部栏下方添加分割线 --- */
+#topbar-wrapper {
+  /* 增加边框，实现分割线效果 */
+  border-bottom: 1px solid var(--main-border-color) !important;
+  
+  /* 给分割线下方留一点空隙，增加呼吸感 */
+  padding-bottom: 1
