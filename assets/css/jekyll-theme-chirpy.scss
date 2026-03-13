@@ -96,12 +96,19 @@ footer {
 }
 
 
-/* 仅针对右侧内容区的顶部栏（含面包屑和搜索框）进行吸顶 */
+/* 针对右侧主体区域的顶部栏进行吸顶设置 */
 #topbar-wrapper {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  z-index: 10;
-  background-color: var(--main-bg); /* 确保背景不透明，防止遮挡内容 */
-  border-bottom: 1px solid var(--main-border-color); /* 保持分割线视觉效果 */
+  z-index: 100;
+  background-color: var(--main-bg); /* 确保背景不透明，防止内容滚动时穿透 */
+  width: 100%;
+}
+
+/* 确保右侧的主体文章区域（非侧边栏）可以独立滚动 */
+#main-wrapper {
+  overflow-y: auto;
+  /* 这里的 flex 布局保证了它在侧边栏之间 */
+  flex: 1;
 }
