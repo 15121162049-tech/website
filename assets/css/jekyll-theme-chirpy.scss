@@ -95,4 +95,15 @@ footer {
   font-weight: 200 !important;
 }
 
+/* --- 头部组件吸顶显示 --- */
 
+
+
+#topbar-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--main-bg);
+  width: 100%;
+  transition: transform 0.3s ease-in-out; /* 平滑隐藏动画 */
+}
