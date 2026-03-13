@@ -107,7 +107,6 @@ footer {
   z-index: 1050 !important; /* 确保层级高于侧边栏和内容 */
   
   /* 2. 这里的 height 决定了分割线的位置 */
-  height: 90px !important; 
   background-color: var(--main-bg) !important;
   
   /* 3. 分割线：作为容器的底部边缘 */
@@ -134,7 +133,6 @@ footer {
 /* 手机端适配：稍微缩小高度 */
 @media (max-width: 991px) {
   #topbar-wrapper {
-    height: 60px !important;
     padding-bottom: 10px !important;
   }
   #main-wrapper {
