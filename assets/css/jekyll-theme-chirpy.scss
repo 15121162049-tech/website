@@ -95,3 +95,50 @@ footer {
   font-weight: 200 !important;
 }
 
+/* --- 锁定分割线以上区域：实现永久吸顶 --- */
+
+#topbar-wrapper {
+  /* 1. 强制固定在视口最顶部 */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0;
+  right: 0;
+  width: 100% !important;
+  z-index: 1050 !important; /* 确保层级高于侧边栏和内容 */
+  
+  /* 2. 这里的 height 决定了分割线的位置 */
+  height: 90px !important; 
+  background-color: var(--main-bg) !important;
+  
+  /* 3. 分割线：作为容器的底部边缘 */
+  border-bottom: 1px solid var(--main-border-color) !important;
+  
+  /* 4. 内部间距调整：让面包屑和搜索框在 90px 空间内垂直居中或偏下 */
+  display: flex !important;
+  align-items: flex-end !important; /* 让内容靠近分割线 */
+  padding-bottom: 15px !important;  /* 内容离分割线的距离 */
+}
+
+/* --- 核心修复：防止正文钻到吸顶区域下面 --- */
+#main-wrapper {
+  /* 这个值要比上面的 height (90px) 大一点，预留出呼吸感 */
+  margin-top: 110px !important; 
+}
+
+/* 修正左侧侧边栏的顶部位置，防止重叠 */
+#sidebar {
+  /* 如果侧边栏也要下移，可以根据需要调整 */
+  padding-top: 2rem !important;
+}
+
+/* 手机端适配：稍微缩小高度 */
+@media (max-width: 991px) {
+  #topbar-wrapper {
+    height: 60px !important;
+    padding-bottom: 10px !important;
+  }
+  #main-wrapper {
+    margin-top: 80px !important;
+  }
+}
+
