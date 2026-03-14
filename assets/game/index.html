@@ -578,43 +578,47 @@
             /* 设置弹窗响应式样式 */
             #settings-screen {
                 width: 95%;
-                max-width: 300px;
+                max-width: 280px;
                 padding: 20px;
             }
             
             #settings-screen h2 {
+                font-size: 18px;
+            }
+            
+            #settings-screen button[onclick="closeSettings()"] {
                 font-size: 20px;
             }
             
             #settings-screen .switch {
-                width: 50px;
-                height: 28px;
+                width: 45px;
+                height: 24px;
             }
             
             #settings-screen .slider:before {
-                height: 18px;
-                width: 18px;
-                left: 3px;
-                bottom: 3px;
+                height: 16px;
+                width: 16px;
+                left: 2px;
+                bottom: 2px;
             }
             
             #settings-screen input:checked + .slider:before {
-                transform: translateX(22px);
+                transform: translateX(21px);
             }
             
             #settings-screen .skin-btn {
-                padding: 6px;
-                font-size: 12px;
+                padding: 5px;
+                font-size: 11px;
             }
             
             #settings-screen .color-btn {
-                width: 35px;
-                height: 35px;
+                width: 30px;
+                height: 30px;
             }
             
             #settings-screen button[onclick="endGame()"] {
-                padding: 10px 30px;
-                font-size: 12px;
+                padding: 8px 25px;
+                font-size: 11px;
             }
         }
     </style>
@@ -638,44 +642,44 @@
             </div>
         </div>
 
-        <div id="settings-screen" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 350px; padding: 30px; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(11, 12, 21, 0.95); border-radius: 12px; box-shadow: 0 0 30px rgba(0, 255, 157, 0.3); pointer-events: auto; z-index: 150;">
-            <div style="position: relative; width: 100%; margin-bottom: 20px; display: flex; justify-content: center;">
-                <h2 style="color: white; font-size: 24px; font-weight: 700; margin: 0; text-shadow: none;">设置</h2>
-                <button onclick="closeSettings()" style="position: absolute; top: -10px; right: -10px; background: none; border: none; color: white; font-size: 28px; cursor: pointer; padding: 5px; line-height: 1;">×</button>
+        <div id="settings-screen" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 300px; padding: 25px; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(11, 12, 21, 0.95); border-radius: 12px; box-shadow: 0 0 30px rgba(0, 255, 157, 0.3); pointer-events: auto; z-index: 150;">
+            <div style="position: relative; width: 100%; margin-bottom: 15px; display: flex; justify-content: center;">
+                <h2 style="color: white; font-size: 20px; font-weight: 700; margin: 0; text-shadow: none;">设置</h2>
+                <button onclick="closeSettings()" style="position: absolute; top: -10px; right: -10px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px; line-height: 1;">×</button>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0; width: 100%; max-width: 300px;">
+            <div style="display: flex; flex-direction: column; gap: 15px; margin: 15px 0; width: 100%; max-width: 280px;">
                 <!-- 换肤选项 -->
                 <div style="width: 100%;">
-                    <span style="color: #00FF9D; font-size: 16px; display: block; margin-bottom: 10px;">形状</span>
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="setSnakeShape('cube'); updateSkinButtons()" id="shape-cube" class="skin-btn" style="flex: 1; padding: 8px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer;">方块</button>
-                        <button onclick="setSnakeShape('diamond'); updateSkinButtons()" id="shape-diamond" class="skin-btn" style="flex: 1; padding: 8px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer;">菱形</button>
-                        <button onclick="setSnakeShape('sphere'); updateSkinButtons()" id="shape-sphere" class="skin-btn" style="flex: 1; padding: 8px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer;">球体</button>
+                    <span style="color: #00FF9D; font-size: 14px; display: block; margin-bottom: 8px;">形状</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="setSnakeShape('cube'); updateSkinButtons()" id="shape-cube" class="skin-btn" style="flex: 1; padding: 6px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 12px;">方块</button>
+                        <button onclick="setSnakeShape('diamond'); updateSkinButtons()" id="shape-diamond" class="skin-btn" style="flex: 1; padding: 6px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 12px;">菱形</button>
+                        <button onclick="setSnakeShape('sphere'); updateSkinButtons()" id="shape-sphere" class="skin-btn" style="flex: 1; padding: 6px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 12px;">球体</button>
                     </div>
                 </div>
                 
                 <div style="width: 100%;">
-                    <span style="color: #00FF9D; font-size: 16px; display: block; margin-bottom: 10px;">颜色</span>
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="setSnakeColor('#00FF9D'); updateColorButtons()" id="color-00FF9D" class="color-btn" style="width: 40px; height: 40px; border: 2px solid #00FF9D; border-radius: 50%; background: #00FF9D; cursor: pointer; box-shadow: 0 0 10px #00FF9D;"></button>
-                        <button onclick="setSnakeColor('#FF2A6D'); updateColorButtons()" id="color-FF2A6D" class="color-btn" style="width: 40px; height: 40px; border: 2px solid #00FF9D; border-radius: 50%; background: #FF2A6D; cursor: pointer;"></button>
-                        <button onclick="setSnakeColor('#FF9E00'); updateColorButtons()" id="color-FF9E00" class="color-btn" style="width: 40px; height: 40px; border: 2px solid #00FF9D; border-radius: 50%; background: #FF9E00; cursor: pointer;"></button>
-                        <button onclick="setSnakeColor('#3E4C84'); updateColorButtons()" id="color-3E4C84" class="color-btn" style="width: 40px; height: 40px; border: 2px solid #00FF9D; border-radius: 50%; background: #3E4C84; cursor: pointer;"></button>
-                        <button onclick="setSnakeColor('#DA70D6'); updateColorButtons()" id="color-DA70D6" class="color-btn" style="width: 40px; height: 40px; border: 2px solid #00FF9D; border-radius: 50%; background: #DA70D6; cursor: pointer;"></button>
-                        <button onclick="setSnakeColor('#87CEEB'); updateColorButtons()" id="color-87CEEB" class="color-btn" style="width: 40px; height: 40px; border: 2px solid #00FF9D; border-radius: 50%; background: #87CEEB; cursor: pointer;"></button>
+                    <span style="color: #00FF9D; font-size: 14px; display: block; margin-bottom: 8px;">颜色</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="setSnakeColor('#00FF9D'); updateColorButtons()" id="color-00FF9D" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #00FF9D; cursor: pointer; box-shadow: 0 0 10px #00FF9D;"></button>
+                        <button onclick="setSnakeColor('#FF2A6D'); updateColorButtons()" id="color-FF2A6D" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #FF2A6D; cursor: pointer;"></button>
+                        <button onclick="setSnakeColor('#FF9E00'); updateColorButtons()" id="color-FF9E00" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #FF9E00; cursor: pointer;"></button>
+                        <button onclick="setSnakeColor('#3E4C84'); updateColorButtons()" id="color-3E4C84" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #3E4C84; cursor: pointer;"></button>
+                        <button onclick="setSnakeColor('#DA70D6'); updateColorButtons()" id="color-DA70D6" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #DA70D6; cursor: pointer;"></button>
+                        <button onclick="setSnakeColor('#87CEEB'); updateColorButtons()" id="color-87CEEB" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #87CEEB; cursor: pointer;"></button>
                     </div>
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <span style="color: #00FF9D; font-size: 16px;">音效</span>
+                    <span style="color: #00FF9D; font-size: 14px;">音效</span>
                     <label class="switch">
                         <input type="checkbox" id="sound-toggle" checked>
                         <span class="slider"></span>
                     </label>
                 </div>
             </div>
-            <div style="display: flex; justify-content: center; width: 100%; max-width: 300px;">
-                <button onclick="endGame()" style="background: linear-gradient(135deg, rgba(255, 42, 109, 0.2) 0%, rgba(204, 31, 84, 0.1) 100%); border: 2px solid #FF2A6D; border-radius: 8px; padding: 12px 40px; font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; color: #FF2A6D; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 10px rgba(255, 42, 109, 0.2);">结束游戏</button>
+            <div style="display: flex; justify-content: center; width: 100%; max-width: 280px;">
+                <button onclick="endGame()" style="background: linear-gradient(135deg, rgba(255, 42, 109, 0.2) 0%, rgba(204, 31, 84, 0.1) 100%); border: 2px solid #FF2A6D; border-radius: 8px; padding: 10px 30px; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; color: #FF2A6D; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 10px rgba(255, 42, 109, 0.2);">结束游戏</button>
             </div>
         </div>
 
