@@ -675,6 +675,13 @@
 
         <div id="combo-display"></div>
 
+        <!-- 性能监控面板 -->
+        <div id="performance-monitor" style="position: fixed; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.7); color: #00FF9D; padding: 10px; border-radius: 5px; font-size: 12px; font-family: monospace; z-index: 1000;">
+            <div>帧率: <span id="fps-counter">0</span> FPS</div>
+            <div>内存: <span id="memory-counter">0</span> MB</div>
+            <div>粒子数: <span id="particle-counter">0</span></div>
+        </div>
+
         <!-- 手机端控制按钮 -->
         <div id="mobile-controls">
             <button id="left-btn" class="control-btn">
@@ -899,11 +906,20 @@
 
         // 粒子对象池
         let particlePool = [];
-        const MAX_POOL_SIZE = 200;
+        const MAX_POOL_SIZE = 100;
 
         function getParticle() {
             if (particlePool.length > 0) {
-                return particlePool.pop();
+                const particle = particlePool.pop();
+                // 重置粒子属性
+                particle.position.set(0, 0, 0);
+                particle.rotation.set(0, 0, 0);
+                particle.scale.set(1, 1, 1);
+                particle.material.opacity = 1;
+                particle.userData.velocity.set(0, 0, 0);
+                particle.userData.rotationSpeed.set(0, 0, 0);
+                particle.userData.life = 1;
+                return particle;
             }
             // 创建新粒子
             const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
@@ -924,9 +940,24 @@
         function returnParticle(particle) {
             if (particlePool.length < MAX_POOL_SIZE) {
                 scene.remove(particle);
+                // 重置粒子属性
+                particle.position.set(0, 0, 0);
+                particle.rotation.set(0, 0, 0);
+                particle.scale.set(1, 1, 1);
+                particle.material.opacity = 1;
+                particle.userData.velocity.set(0, 0, 0);
+                particle.userData.rotationSpeed.set(0, 0, 0);
+                particle.userData.life = 1;
                 particlePool.push(particle);
             } else {
                 scene.remove(particle);
+                // 释放材质和几何体
+                if (particle.material) {
+                    particle.material.dispose();
+                }
+                if (particle.geometry) {
+                    particle.geometry.dispose();
+                }
             }
         }
 
@@ -950,15 +981,16 @@
             // scene.fog = new THREE.Fog(0x000000, 30, 100);
 
             // 相机
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
             camera.position.set(0, 12, 18);
             camera.lookAt(0, 0, -15);
 
             // 渲染器
-            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gameCanvas'), antialias: true });
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gameCanvas'), antialias: false });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
             renderer.shadowMap.enabled = false; // 关闭阴影映射
+            renderer.autoClear = true;
 
             // 灯光
             const ambientLight = new THREE.AmbientLight(0x404080, 0.5);
@@ -1669,7 +1701,7 @@
 
         // 启动秋叶效果
         function startAutumnLeaves() {
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 10; i++) {
                 setTimeout(() => {
                     createAutumnLeaf();
                 }, i * 200);
@@ -1717,7 +1749,7 @@
 
         // 启动降雪效果
         function startSnowfall() {
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 30; i++) {
                 setTimeout(() => {
                     createSnowflake();
                 }, i * 60);
@@ -1759,7 +1791,7 @@
         let particles = [];
         function createParticles(position, color) {
             // 创建增强的粒子效果
-            const particleCount = 15;
+            const particleCount = 8;
             const newParticles = [];
 
             for (let i = 0; i < particleCount; i++) {
@@ -1817,7 +1849,7 @@
         function createFireworksEffect(position) {
             // 烟花颜色数组
             const colors = [0xFF2A6D, 0x00FF9D, 0xFF9E00, 0x00FFFF, 0xFF69B4, 0xFFFF00];
-            const particleCount = 50; // 更多粒子
+            const particleCount = 20; // 减少粒子数量
             const particles = [];
 
             for (let i = 0; i < particleCount; i++) {
@@ -2069,14 +2101,14 @@
             // 根据车型创建不同的蛇头
             switch(GameState.snakeHead) {
                 case 'plane': // 飞机
-                    // 飞机机身
+                    // 简化飞机机身
                     const planeBodyGeometry = new THREE.BoxGeometry(1.8, 0.4, 0.8);
                     const planeBody = new THREE.Mesh(planeBodyGeometry, bodyMaterial);
                     planeBody.position.set(0, 0.3, 0);
                     planeBody.castShadow = false;
                     snakeHead.add(planeBody);
 
-                    // 飞机机翼
+                    // 简化飞机机翼
                     const wingGeometry = new THREE.BoxGeometry(0.2, 0.1, 2.0);
                     const wingMaterial = new THREE.MeshStandardMaterial({
                         color: GameState.snakeColor,
@@ -2095,22 +2127,22 @@
                     rightWing.castShadow = false;
                     snakeHead.add(rightWing);
 
-                    // 飞机尾翼
+                    // 简化飞机尾翼
                     const tailGeometry = new THREE.BoxGeometry(0.2, 0.6, 0.4);
                     const tail = new THREE.Mesh(tailGeometry, wingMaterial);
                     tail.position.set(0, 0.5, -0.6);
                     tail.castShadow = false;
                     snakeHead.add(tail);
 
-                    // 飞机驾驶舱
+                    // 简化飞机驾驶舱
                     const cockpitGeometry = new THREE.BoxGeometry(0.6, 0.3, 0.4);
                     const cockpit = new THREE.Mesh(cockpitGeometry, windshieldMaterial);
                     cockpit.position.set(0, 0.45, 0.6);
                     cockpit.castShadow = false;
                     snakeHead.add(cockpit);
 
-                    // 飞机引擎
-                    const engineGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.5, 16);
+                    // 简化飞机引擎
+                    const engineGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.5, 8); // 减少分段数
                     const engineMaterial = new THREE.MeshStandardMaterial({
                         color: 0x333333,
                         roughness: 0.6,
@@ -2138,29 +2170,29 @@
                     break;
 
                 case 'ufo': // UFO
-                    // UFO主体
-                    const ufoGeometry = new THREE.SphereGeometry(0.8, 16, 16);
+                    // 简化UFO主体
+                    const ufoGeometry = new THREE.SphereGeometry(0.8, 8, 8); // 减少分段数
                     const ufoBody = new THREE.Mesh(ufoGeometry, bodyMaterial);
                     ufoBody.position.set(0, 0.4, 0);
                     ufoBody.castShadow = false;
                     snakeHead.add(ufoBody);
 
-                    // UFO底部
-                    const ufoBaseGeometry = new THREE.CylinderGeometry(0.7, 0.9, 0.3, 16);
+                    // 简化UFO底部
+                    const ufoBaseGeometry = new THREE.CylinderGeometry(0.7, 0.9, 0.3, 8); // 减少分段数
                     const ufoBase = new THREE.Mesh(ufoBaseGeometry, bodyMaterial);
                     ufoBase.position.set(0, 0.15, 0);
                     ufoBase.castShadow = false;
                     snakeHead.add(ufoBase);
 
-                    // UFO驾驶舱
-                    const ufoCockpitGeometry = new THREE.SphereGeometry(0.3, 12, 12);
+                    // 简化UFO驾驶舱
+                    const ufoCockpitGeometry = new THREE.SphereGeometry(0.3, 8, 8); // 减少分段数
                     const ufoCockpit = new THREE.Mesh(ufoCockpitGeometry, windshieldMaterial);
                     ufoCockpit.position.set(0, 0.5, 0);
                     ufoCockpit.castShadow = false;
                     snakeHead.add(ufoCockpit);
 
-                    // UFO灯光
-                    const ufoLightGeometry = new THREE.CircleGeometry(0.1, 8);
+                    // 简化UFO灯光
+                    const ufoLightGeometry = new THREE.CircleGeometry(0.1, 4); // 减少分段数
                     const ufoLightMaterial = new THREE.MeshBasicMaterial({ color: 0x00FFFF });
                     
                     const ufoLight1 = new THREE.Mesh(ufoLightGeometry, ufoLightMaterial);
@@ -2173,39 +2205,27 @@
                     ufoLight2.rotation.x = Math.PI / 2;
                     snakeHead.add(ufoLight2);
 
-                    const ufoLight3 = new THREE.Mesh(ufoLightGeometry, ufoLightMaterial);
-                    ufoLight3.position.set(0, 0.1, -0.7);
-                    ufoLight3.rotation.x = Math.PI / 2;
-                    snakeHead.add(ufoLight3);
-
-                    const ufoLight4 = new THREE.Mesh(ufoLightGeometry, ufoLightMaterial);
-                    ufoLight4.position.set(-0.6, 0.1, 0);
-                    ufoLight4.rotation.x = Math.PI / 2;
-                    snakeHead.add(ufoLight4);
-
                     break;
 
                 default: // 卡车（默认）
-                    // 驾驶室（卡车头部）
+                    // 简化驾驶室（卡车头部）
                     const cabinGeometry = new THREE.BoxGeometry(1.1, 0.9, 1.3);
                     const cabin = new THREE.Mesh(cabinGeometry, bodyMaterial);
                     cabin.position.set(0, 0.6, 0.2);
                     cabin.castShadow = false;
                     snakeHead.add(cabin);
 
-                    // 卡车挡风玻璃
+                    // 简化卡车挡风玻璃
                     const windshield = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.45, 0.1), windshieldMaterial);
                     windshield.position.set(0, 0.85, 0.85);
                     windshield.rotation.x = -0.3;
                     snakeHead.add(windshield);
 
-                    // 卡车车轮
+                    // 简化卡车车轮
                     const wheelPositions = [
                         [-0.55, 0.12, 0.55],
-                        [0.55, 0.12, 0.55],
-                        [-0.55, 0.12, -0.25],
-                        [0.55, 0.12, -0.25]
-                    ];
+                        [0.55, 0.12, 0.55]
+                    ]; // 减少车轮数量
 
                     wheelPositions.forEach(pos => {
                         const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
@@ -2234,23 +2254,6 @@
                     const grill = new THREE.Mesh(grillGeometry, grillMaterial);
                     grill.position.set(0, 0.2, 0.95);
                     snakeHead.add(grill);
-
-                    // 排气管
-                    const exhaustGeometry = new THREE.CylinderGeometry(0.06, 0.06, 0.3, 8);
-                    const exhaustMaterial = new THREE.MeshStandardMaterial({
-                        color: 0x555555,
-                        roughness: 0.6,
-                        metalness: 0.4
-                    });
-                    const leftExhaust = new THREE.Mesh(exhaustGeometry, exhaustMaterial);
-                    leftExhaust.position.set(-0.5, 0.15, 0.85);
-                    leftExhaust.rotation.x = Math.PI / 2;
-                    snakeHead.add(leftExhaust);
-
-                    const rightExhaust = new THREE.Mesh(exhaustGeometry, exhaustMaterial);
-                    rightExhaust.position.set(0.5, 0.15, 0.85);
-                    rightExhaust.rotation.x = Math.PI / 2;
-                    snakeHead.add(rightExhaust);
             }
 
             snakeHead.position.set(getLaneX(GameState.targetLane), 0.5, 0);
@@ -2263,7 +2266,7 @@
             }
         }
 
-        function createBodySegment(index) {
+        function createBodySegment(index, xPosition) {
             const size = 1 - (index * 0.03);
             let geometry;
             
@@ -2271,10 +2274,10 @@
             switch(GameState.snakeShape) {
                 case 'diamond':
                 case 'octahedron':
-                    geometry = new THREE.OctahedronGeometry(size * 1.0, 0); // 增大八面体大小和高度
+                    geometry = new THREE.OctahedronGeometry(size * 0.7, 0); // 减小八面体大小
                     break;
                 case 'sphere':
-                    geometry = new THREE.IcosahedronGeometry(size * 0.5, 2); // 二十面体，细分级别2，接近26面体效果
+                    geometry = new THREE.IcosahedronGeometry(size * 0.5, 1); // 二十面体，细分级别1，减少复杂度
                     break;
                 default: // cube
                     geometry = new THREE.BoxGeometry(size, size, size);
@@ -2289,7 +2292,16 @@
             });
 
             const segment = new THREE.Mesh(geometry, material);
-            segment.position.set(0, 0.5, (index + 1) * GameConfig.SEGMENT_SPACING);
+            
+            // 直接在蛇头后面的位置生成，而不是在默认位置
+            if (snakeHead) {
+                segment.position.x = xPosition || snakeHead.position.x;
+                segment.position.y = snakeHead.position.y;
+                segment.position.z = -(index + 1) * GameConfig.SEGMENT_SPACING; // 负数z值，在蛇头后面
+            } else {
+                segment.position.set(xPosition || 0, 0.5, -(index + 1) * GameConfig.SEGMENT_SPACING); // 负数z值，在蛇头后面
+            }
+            
             segment.castShadow = false; // 关闭蛇身投射阴影
 
             scene.add(segment);
@@ -2351,20 +2363,6 @@
             fuse.position.set(0, 0.65, 0);
             fuse.rotation.z = 0.3;
             group.add(fuse);
-
-            // 引线上的火花效果
-            const sparkGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-            const sparkMaterial = new THREE.MeshBasicMaterial({ color: 0xFF4500 });
-            const spark = new THREE.Mesh(sparkGeometry, sparkMaterial);
-            spark.position.set(0, 0.95, 0); // 位于引线顶部
-            spark.userData = { isFuseSpark: true };
-            group.add(spark);
-
-            // 火花点光源
-            const sparkLight = new THREE.PointLight(0xFF4500, 1, 2);
-            sparkLight.position.copy(spark.position);
-            sparkLight.userData = { isFuseSparkLight: true };
-            group.add(sparkLight);
 
             // 4条车道随机位置
             const lane = Math.floor(Math.random() * 4);
@@ -2464,20 +2462,6 @@
             fuse.position.set(0, 0.8, 0);
             fuse.rotation.z = 0.3;
             group.add(fuse);
-
-            // 引线上的火花效果
-            const sparkGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-            const sparkMaterial = new THREE.MeshBasicMaterial({ color: 0xFF4500 });
-            const spark = new THREE.Mesh(sparkGeometry, sparkMaterial);
-            spark.position.set(0, 1.1, 0); // 位于引线顶部
-            spark.userData = { isFuseSpark: true };
-            group.add(spark);
-
-            // 火花点光源
-            const sparkLight = new THREE.PointLight(0xFF4500, 1, 2);
-            sparkLight.position.copy(spark.position);
-            sparkLight.userData = { isFuseSparkLight: true };
-            group.add(sparkLight);
 
             // 车道位置（居中）
             group.position.set(-5.25 + lane * 3.5, 0.5, GameConfig.SPAWN_Z);
@@ -2594,22 +2578,12 @@
                 apple.rotation.y += apple.userData.rotationSpeed;
                 apple.rotation.x += apple.userData.rotationSpeed * 0.5;
 
-                // 检测碰撞 - 多维度碰撞检测，确保高速时也能检测到
-                const distance = snakeHead.position.distanceTo(apple.position);
-                const oldDistance = snakeHead.position.distanceTo(oldPosition);
-                
-                // 1. 检查当前距离
-                // 2. 检查距离变化（穿过）
-                // 3. 检查x轴和z轴的单独距离
+                // 简化碰撞检测，提高性能
                 const xDistance = Math.abs(snakeHead.position.x - apple.position.x);
                 const zDistance = Math.abs(snakeHead.position.z - apple.position.z);
-                const oldZDistance = Math.abs(snakeHead.position.z - oldPosition.z);
                 
-                // 更宽松的碰撞检测条件
-                if (distance < 2.0 || // 增大碰撞半径
-                    (oldDistance >= 2.0 && distance < 2.0) || // 检测穿过
-                    (xDistance < 1.5 && zDistance < 1.5) || // 单独检查x和z
-                    (xDistance < 1.5 && oldZDistance >= 1.5 && zDistance < 1.5)) { // 检测z轴穿过
+                // 简化的碰撞检测条件
+                if (xDistance < 1.5 && zDistance < 1.5) {
                     // 吃掉苹果
                     collectApple(apple);
                     apples.splice(i, 1);
@@ -2629,55 +2603,14 @@
                 const oldPosition = mine.position.clone();
                 mine.position.z += moveDistance; // 向后移动，z值增加
 
-                // 引线火花效果（持续存在，不会引爆）
-                // 增强的火花效果
-                mine.children.forEach(child => {
-                    if (child.userData.isFuseSpark) {
-                        // 保持火花在引线顶部位置
-                        child.position.y = 1.1;
-                        // 增强的火花闪烁效果
-                        const time = Date.now() * 0.02;
-                        const intensity = Math.sin(time) * 0.5 + 0.5;
-                        // 更亮的火花颜色
-                        const color = new THREE.Color();
-                        color.setHSL(0.1, 1, 0.7 + intensity * 0.3); // 更亮的橙色
-                        child.material.color.copy(color);
-                        // 火花大小变化更明显
-                        const scale = 0.8 + Math.sin(Date.now() * 0.03) * 0.4;
-                        child.scale.set(scale, scale, scale);
-                        // 火花位置轻微抖动
-                        child.position.x = Math.sin(Date.now() * 0.1) * 0.02;
-                        child.position.z = Math.cos(Date.now() * 0.1) * 0.02;
-                    }
-                    if (child.userData.isFuseSparkLight) {
-                        // 保持光源在火花位置
-                        child.position.y = 1.1;
-                        // 增强的光源强度变化
-                        const intensity = 1.5 + Math.sin(Date.now() * 0.02) * 1;
-                        child.intensity = intensity;
-                        // 光源颜色与火花同步
-                        const color = new THREE.Color();
-                        color.setHSL(0.1, 1, 0.8); // 亮橙色
-                        child.color.copy(color);
-                    }
-                });
 
-                // 检测碰撞 - 多维度碰撞检测，确保高速时也能检测到
-                const distance = snakeHead.position.distanceTo(mine.position);
-                const oldDistance = snakeHead.position.distanceTo(oldPosition);
-                
-                // 1. 检查当前距离
-                // 2. 检查距离变化（穿过）
-                // 3. 检查x轴和z轴的单独距离
+
+                // 简化碰撞检测，提高性能
                 const xDistance = Math.abs(snakeHead.position.x - mine.position.x);
                 const zDistance = Math.abs(snakeHead.position.z - mine.position.z);
-                const oldZDistance = Math.abs(snakeHead.position.z - oldPosition.z);
                 
-                // 更宽松的碰撞检测条件
-                if (!GameState.isInvulnerable && (distance < 2.0 || // 增大碰撞半径
-                    (oldDistance >= 2.0 && distance < 2.0) || // 检测穿过
-                    (xDistance < 1.5 && zDistance < 1.5) || // 单独检查x和z
-                    (xDistance < 1.5 && oldZDistance >= 1.5 && zDistance < 1.5))) { // 检测z轴穿过
+                // 简化的碰撞检测条件
+                if (!GameState.isInvulnerable && xDistance < 1.5 && zDistance < 1.5) {
                     // 撞到地雷
                     hitMine(mine);
                     mines.splice(i, 1);
@@ -2792,7 +2725,7 @@
             scene.remove(mine);
 
             // 减弱的爆炸效果，只有棕色碎片
-            const particleCount = 20;
+            const particleCount = 10;
             const particles = [];
             const brownColor = 0x8B4513; // 棕色
 
@@ -3026,7 +2959,7 @@
 
         // 蛇块破碎动效
         function createBlockDestruction(position) {
-            const particleCount = 15;
+            const particleCount = 8;
             const particles = [];
             const blockColor = 0x00CC7A; // 蛇身颜色
 
@@ -3310,6 +3243,18 @@
             
             // 重新创建蛇
             createSnake();
+            
+            // 根据当前生命值调整蛇身长度
+            while (snakeBody.length < GameState.snakeLength - 1) {
+                // 添加蛇身段
+                createBodySegment(snakeBody.length);
+            }
+            
+            while (snakeBody.length > GameState.snakeLength - 1) {
+                // 移除多余的蛇身段
+                const segment = snakeBody.pop();
+                scene.remove(segment);
+            }
         }
 
         function endGame() {
@@ -3442,27 +3387,75 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        function animate() {
-            requestAnimationFrame(animate);
+        // 帧率控制变量
+        let lastTime = 0;
+        const MAX_FPS = 60;
+        const MIN_FRAME_TIME = 1000 / MAX_FPS;
+        
+        // 性能监控变量
+        let frameCount = 0;
+        let lastFpsUpdate = 0;
+        let fps = 0;
 
-            const delta = clock.getDelta();
+        function animate(timestamp) {
+            // 帧率控制
+            if (!lastTime) lastTime = timestamp;
+            const elapsed = timestamp - lastTime;
+            
+            const delta = elapsed / 1000; // 转换为秒
+            
+            // 帧率计算
+            frameCount++;
+            if (timestamp - lastFpsUpdate >= 1000) {
+                fps = frameCount;
+                frameCount = 0;
+                lastFpsUpdate = timestamp;
+                
+                // 更新性能监控面板
+                updatePerformanceMonitor();
+            }
 
             if (GameState.isPlaying && !GameState.isPaused) {
                 updateSnake(delta);
                 updateTrackAndObstacles(delta);
-                spawnObstacles(clock.elapsedTime);
+                spawnObstacles(clock.getElapsedTime());
                 // 只在游戏进行时更新HUD
                 updateHUD();
                 // 更新季节状态
                 updateSeason(delta);
                 // 创建季节性粒子效果
-                createSeasonalParticles();
+                if (Math.random() < 0.3) { // 减少创建频率
+                    createSeasonalParticles();
+                }
                 // 更新粒子状态
                 updateParticles(delta);
             }
 
             // 始终渲染场景，确保能看到赛道和蛇的初始状态
             renderer.render(scene, camera);
+            
+            // 帧率控制 - 只限制最大帧率，不跳过逻辑
+            if (elapsed < MIN_FRAME_TIME) {
+                setTimeout(() => requestAnimationFrame(animate), MIN_FRAME_TIME - elapsed);
+            } else {
+                lastTime = timestamp;
+                requestAnimationFrame(animate);
+            }
+        }
+
+        // 更新性能监控面板
+        function updatePerformanceMonitor() {
+            // 更新帧率
+            document.getElementById('fps-counter').textContent = fps;
+            
+            // 更新粒子数
+            document.getElementById('particle-counter').textContent = particles.length;
+            
+            // 更新内存使用情况（如果支持）
+            if (performance && performance.memory) {
+                const memoryMB = (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(1);
+                document.getElementById('memory-counter').textContent = memoryMB;
+            }
         }
 
         // 全局函数定义
@@ -3545,7 +3538,16 @@
             mines = [];
 
             // 重新创建蛇身
-            snakeBody.forEach(s => scene.remove(s));
+            snakeBody.forEach(s => {
+                scene.remove(s);
+                // 释放材质和几何体
+                if (s.material) {
+                    s.material.dispose();
+                }
+                if (s.geometry) {
+                    s.geometry.dispose();
+                }
+            });
             snakeBody = [];
             for (let i = 0; i < GameConfig.INITIAL_SNAKE_LENGTH - 1; i++) {
                 createBodySegment(i);
@@ -3553,6 +3555,8 @@
 
             // 重置生成计时器
             lastSpawnTime = 0;
+            // 重置时钟
+            clock.reset();
 
             // 重置树木，确保从春季开始
             for (let tree of trees) {
@@ -3581,191 +3585,7 @@
         init();
     </script>
 
-<style>
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
-
-.inland-security-footer {
-  position: fixed;
-  z-index: 10;
-  bottom: 0;
-  right: 0;
-  width: fit-content;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.tooltip-container {
-  position: relative;
-}
-
-.trigger-content {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  background-color: transparent;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.minimax-link {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-weight: 300;
-  color: #adadad;
-  text-decoration: none;
-}
-
-.minimax-link:visited {
-  color: #adadad;
-}
-
-.minimax-link:hover {
-  color: #666666;
-}
-
-.tooltip-content {
-  position: absolute;
-  bottom: 100%;
-  right: 0;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  padding-bottom: 16px; /* 8px 内容间距 + 8px 用于鼠标移动的透明区域 */
-  font-size: 12px;
-  line-height: 17px;
-  background-color: #fafafa;
-  border-radius: 12px;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  color: #171717;
-}
-
-/* 创建透明的连接区域，让鼠标可以平滑移动到 tooltip */
-.tooltip-content::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  right: 0;
-  height: 16px;
-}
-
-.tooltip-container:hover .tooltip-content {
-  display: flex;
-}
-
-.info-section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-}
-
-.beian-link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #171717;
-}
-
-.beian-icon {
-  width: 14px;
-  height: 14px;
-  margin-right: 2px;
-}
-
-.underline-text {
-  color: #171717;
-  text-decoration: underline;
-}
-
-.underline-text:hover {
-  color: #000000;
-}
-
-/* 深色模式支持 */
-@media (prefers-color-scheme: dark) {
-  .trigger-content {
-    background-color: transparent;
-  }
-
-  .minimax-link,
-  .minimax-link:visited {
-    color: #666666;
-  }
-
-  .minimax-link:hover {
-    color: #adadad;
-  }
-
-  .tooltip-content {
-    background-color: #262626;
-    color: #ededed;
-  }
-
-  .beian-link,
-  .underline-text {
-    color: #ededed;
-  }
-
-  .underline-text:hover {
-    color: #ffffff;
-  }
-}
-
-</style>
-<div class="inland-security-footer">
-  <div class="tooltip-container">
-    <div class="trigger-content">
-      <a href="https://www.minimaxi.com/" target="_blank" rel="noreferrer" class="minimax-link">
-        <span>© 2026 MiniMax</span>
-      </a>
-    </div>
-    <div class="tooltip-content">
-      <section class="info-section">
-        <span>上海稀宇科技有限公司</span>
-      </section>
-
-      <section class="info-section">
-        <a class="beian-link" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010402010179" target="_blank" rel="noreferrer">
-          <img alt="hailuo-beian-icon" src="https://cdn.hailuoai.com/hailuo-video-web/public_assets/223037d3-79fd-4db0-a456-749f38a6a14b.png" class="beian-icon">
-          <span class="underline-text">沪公网安备31010402010179号</span>
-        </a>
-        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer" class="underline-text">
-          沪ICP备2023003282号-38
-        </a>
-      </section>
-
-      <section class="info-section">
-        <span>模型名称：MiniMax</span>
-        <span>备案号：Shanghai-MiniMax-202505230046</span>
-      </section>
-
-      <section class="info-section">
-        <a href="https://agent.minimaxi.com/doc/zh/terms-of-service.html" target="_blank" rel="noreferrer" class="underline-text">
-          用户协议
-        </a>
-        <a href="https://agent.minimaxi.com/doc/zh/privacy-policy.html" target="_blank" rel="noreferrer" class="underline-text">
-          隐私政策
-        </a>
-      </section>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
