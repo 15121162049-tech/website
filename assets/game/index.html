@@ -642,44 +642,44 @@
             </div>
         </div>
 
-        <div id="settings-screen" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 300px; padding: 25px; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(11, 12, 21, 0.95); border-radius: 12px; box-shadow: 0 0 30px rgba(0, 255, 157, 0.3); pointer-events: auto; z-index: 150;">
-            <div style="position: relative; width: 100%; margin-bottom: 15px; display: flex; justify-content: center;">
-                <h2 style="color: white; font-size: 20px; font-weight: 700; margin: 0; text-shadow: none;">设置</h2>
-                <button onclick="closeSettings()" style="position: absolute; top: -10px; right: -10px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 5px; line-height: 1;">×</button>
+        <div id="settings-screen" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 250px; padding: 20px; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(11, 12, 21, 0.95); border-radius: 10px; box-shadow: 0 0 20px rgba(0, 255, 157, 0.3); pointer-events: auto; z-index: 150;">
+            <div style="position: relative; width: 100%; margin-bottom: 10px; display: flex; justify-content: center;">
+                <h2 style="color: white; font-size: 18px; font-weight: 700; margin: 0; text-shadow: none;">设置</h2>
+                <button onclick="closeSettings()" style="position: absolute; top: -8px; right: -8px; background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 3px; line-height: 1;">×</button>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 15px; margin: 15px 0; width: 100%; max-width: 280px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; margin: 12px 0; width: 100%; max-width: 230px;">
                 <!-- 换肤选项 -->
                 <div style="width: 100%;">
-                    <span style="color: #00FF9D; font-size: 14px; display: block; margin-bottom: 8px;">形状</span>
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="setSnakeShape('cube'); updateSkinButtons()" id="shape-cube" class="skin-btn" style="flex: 1; padding: 6px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 12px;">方块</button>
-                        <button onclick="setSnakeShape('diamond'); updateSkinButtons()" id="shape-diamond" class="skin-btn" style="flex: 1; padding: 6px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 12px;">菱形</button>
-                        <button onclick="setSnakeShape('sphere'); updateSkinButtons()" id="shape-sphere" class="skin-btn" style="flex: 1; padding: 6px; border: 2px solid #00FF9D; border-radius: 6px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 12px;">球体</button>
+                    <span style="color: #00FF9D; font-size: 12px; display: block; margin-bottom: 6px;">形状</span>
+                    <div style="display: flex; gap: 6px;">
+                        <button onclick="setSnakeShape('cube'); updateSkinButtons()" id="shape-cube" class="skin-btn" style="flex: 1; padding: 5px; border: 1px solid #00FF9D; border-radius: 4px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 10px;">方块</button>
+                        <button onclick="setSnakeShape('diamond'); updateSkinButtons()" id="shape-diamond" class="skin-btn" style="flex: 1; padding: 5px; border: 1px solid #00FF9D; border-radius: 4px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 10px;">菱形</button>
+                        <button onclick="setSnakeShape('sphere'); updateSkinButtons()" id="shape-sphere" class="skin-btn" style="flex: 1; padding: 5px; border: 1px solid #00FF9D; border-radius: 4px; background: rgba(0, 255, 157, 0.1); color: #00FF9D; cursor: pointer; font-size: 10px;">球体</button>
                     </div>
                 </div>
                 
                 <div style="width: 100%;">
-                    <span style="color: #00FF9D; font-size: 14px; display: block; margin-bottom: 8px;">颜色</span>
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="setSnakeColor('#00FF9D'); updateColorButtons()" id="color-00FF9D" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #00FF9D; cursor: pointer; box-shadow: 0 0 10px #00FF9D;"></button>
-                        <button onclick="setSnakeColor('#FF2A6D'); updateColorButtons()" id="color-FF2A6D" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #FF2A6D; cursor: pointer;"></button>
-                        <button onclick="setSnakeColor('#FF9E00'); updateColorButtons()" id="color-FF9E00" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #FF9E00; cursor: pointer;"></button>
-                        <button onclick="setSnakeColor('#3E4C84'); updateColorButtons()" id="color-3E4C84" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #3E4C84; cursor: pointer;"></button>
-                        <button onclick="setSnakeColor('#DA70D6'); updateColorButtons()" id="color-DA70D6" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #DA70D6; cursor: pointer;"></button>
-                        <button onclick="setSnakeColor('#87CEEB'); updateColorButtons()" id="color-87CEEB" class="color-btn" style="width: 35px; height: 35px; border: 2px solid #00FF9D; border-radius: 50%; background: #87CEEB; cursor: pointer;"></button>
+                    <span style="color: #00FF9D; font-size: 12px; display: block; margin-bottom: 6px;">颜色</span>
+                    <div style="display: flex; gap: 6px;">
+                        <button onclick="setSnakeColor('#00FF9D'); updateColorButtons()" id="color-00FF9D" class="color-btn" style="width: 30px; height: 30px; border: 1px solid #00FF9D; border-radius: 50%; background: #00FF9D; cursor: pointer; box-shadow: 0 0 8px #00FF9D;"></button>
+                        <button onclick="setSnakeColor('#FF2A6D'); updateColorButtons()" id="color-FF2A6D" class="color-btn" style="width: 30px; height: 30px; border: 1px solid #00FF9D; border-radius: 50%; background: #FF2A6D; cursor: pointer;"></button>
+                        <button onclick="setSnakeColor('#FF9E00'); updateColorButtons()" id="color-FF9E00" class="color-btn" style="width: 30px; height: 30px; border: 1px solid #00FF9D; border-radius: 50%; background: #FF9E00; cursor: pointer;"></button>
+                        <button onclick="setSnakeColor('#3E4C84'); updateColorButtons()" id="color-3E4C84" class="color-btn" style="width: 30px; height: 30px; border: 1px solid #00FF9D; border-radius: 50%; background: #3E4C84; cursor: pointer;"></button>
+                        <button onclick="setSnakeColor('#DA70D6'); updateColorButtons()" id="color-DA70D6" class="color-btn" style="width: 30px; height: 30px; border: 1px solid #00FF9D; border-radius: 50%; background: #DA70D6; cursor: pointer;"></button>
+                        <button onclick="setSnakeColor('#87CEEB'); updateColorButtons()" id="color-87CEEB" class="color-btn" style="width: 30px; height: 30px; border: 1px solid #00FF9D; border-radius: 50%; background: #87CEEB; cursor: pointer;"></button>
                     </div>
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <span style="color: #00FF9D; font-size: 14px;">音效</span>
+                    <span style="color: #00FF9D; font-size: 12px;">音效</span>
                     <label class="switch">
                         <input type="checkbox" id="sound-toggle" checked>
                         <span class="slider"></span>
                     </label>
                 </div>
             </div>
-            <div style="display: flex; justify-content: center; width: 100%; max-width: 280px;">
-                <button onclick="endGame()" style="background: linear-gradient(135deg, rgba(255, 42, 109, 0.2) 0%, rgba(204, 31, 84, 0.1) 100%); border: 2px solid #FF2A6D; border-radius: 8px; padding: 10px 30px; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; color: #FF2A6D; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 10px rgba(255, 42, 109, 0.2);">结束游戏</button>
+            <div style="display: flex; justify-content: center; width: 100%; max-width: 230px;">
+                <button onclick="endGame()" style="background: linear-gradient(135deg, rgba(255, 42, 109, 0.2) 0%, rgba(204, 31, 84, 0.1) 100%); border: 1px solid #FF2A6D; border-radius: 6px; padding: 8px 25px; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; color: #FF2A6D; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 0 8px rgba(255, 42, 109, 0.2);">结束游戏</button>
             </div>
         </div>
 
@@ -836,6 +836,7 @@
                             AudioManager.audioContext.resume();
                         }
                         this.isPlaying = true;
+                        this.nextNoteTime = AudioManager.audioContext.currentTime;
                         this.scheduleNext();
                     },
                     stop: function() {
