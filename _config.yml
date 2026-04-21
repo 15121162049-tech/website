@@ -20,23 +20,23 @@ description: >-
   A minimal, responsive and feature-rich Jekyll theme for technical writing.
 
 # 修正点 1：填写完整协议与主机名（不带仓库名，不带结尾斜杠）
-url: 'https://15121162049-tech.github.io'
+url: 'https://gxp-tech.github.io'
 
 # 修正点 2：必须填写仓库名，这是解决 107 个报错的关键
 baseurl: '/website' 
 
 github:
-  username: 15121162049-tech
+  username: gxp-tech
 
 twitter:
-  username: 15121162049-tech
+  username: gxp-tech
 
 social:
-  name: 15121162049-tech
+  name: gxp-tech
   email: 15121162049@163.com
   links:
-   - https://github.com/15121162049-tech/website
-   - https://github.com/15121162049-tech
+   - https://github.com/gxp-tech/website
+   - https://github.com/gxp-tech
 
 # Site Verification Settings
 webmaster_verifications:
